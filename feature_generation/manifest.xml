@@ -1,0 +1,17 @@
+<package>
+  <description brief="feature_generation">
+
+     activity_detection
+
+  </description>
+  <author>Hema Koppula</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/feature_generation</url>
+  <depend package="pcl"/>
+  <depend package="pcl_ros"/>
+  <depend package="opencv2"/>
+
+
+</package>
+
