@@ -59,5 +59,11 @@ We provide both segement-level and frame-level feature generation code and the c
 The learning code which uses the frame-level features computes the segment-level features on the fly and hence is more flexible. 
 
   i) Segment-level feature generation:  
+	Executable: featgenSeg
+	Usage: rosrun featgenSeg <data_directory> <activity_label_file>
+	Example usage: rosrun featgenSeg /data/Subject1_rgbd_rawtext/making_cereal/ activityLabel.txt
 
   ii) Frame-level feature generation:
+	Executable: frameFeatgen
+	Usage: rosrun frameFeatgen <data_directory> <activity_label_file>
+	Example usage: rosrun frameFeatgen /data/Subject1_rgbd_rawtext/making_cereal/ activityLabel.txt

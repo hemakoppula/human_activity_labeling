@@ -51,6 +51,7 @@ bool useSkeleton = true;
 
 map<string, string> data_act_map;
 map<string, vector<string> > data_obj_map;
+map<string, vector<string> > data_obj_type_map;
 map<string, set<int> > FrameList;
 map<string, map< int, set<int> > > SegmentList;
 string dataLocation;
@@ -148,9 +149,59 @@ void readLabelFile() {
     file.close();
 }
 
-// read file that maps data and activity
+
 
 void readDataActMap(string actfile) {
+    const string mapfile = dataLocation + actfile;
+
+    printf("Opening map of data to activity: \"%s\"\n",
+            (char*) mapfile.c_str());
+    ifstream file((char*) mapfile.c_str(), ifstream::in);
+
+    string line;
+    int count = 0;
+    while (getline(file, line)) {
+        stringstream lineStream(line);        string element1, element2, element3;
+        parseChk(getline(lineStream, element1, ','));
+
+        if (element1.compare("END") == 0) {
+            break;
+        }
+        parseChk(getline(lineStream, element2, ','));
+        if (element1.length() != 10) {
+            errorMsg("Data Act Map file format mismatch..");
+        }
+
+        data_act_map[element1] = element2;
+        parseChk(getline(lineStream, element3, ',')); // get actor
+        while (getline(lineStream, element3, ',')) {
+                        cout << element3 << endl;
+            //vector<string> fields;
+            //boost::split_regex( fields, element3, boost::regex( ":" ) );
+                        int v = element3.find(":",0);
+            cout << element3.substr(0,v) << endl;
+            cout << element3.substr(v+1) << endl;
+
+            data_obj_map[element1].push_back(element3.substr(0,v));
+
+            data_obj_type_map[element1].push_back(element3.substr(v+1));
+        }
+
+        cout << "\t" << element1 << " : " << data_act_map[element1] << endl;
+        count++;
+    }
+    file.close();
+
+    if (count == 0) {
+        errorMsg("File does not exist or is empty!\n");
+    }
+    printf("\tcount = %d\n\n", count);
+}
+
+
+// read file that maps data and activity
+
+void readDataActMapOld(string actfile) {
     const string mapfile = dataLocation + actfile;
 
     printf("Opening map of data to activity: \"%s\"\n", (char*) mapfile.c_str());

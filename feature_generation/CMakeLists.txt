@@ -31,7 +31,9 @@ gencfg()
 
 
 rosbuild_add_executable (segment src/get_skel_segments.cpp)
-
+rosbuild_add_executable (frameFeatgen src/featureGenerationForFrames.cpp)
+rosbuild_add_executable (featgenSeg src/featureGenerationForSegments.cpp)
+rosbuild_add_executable (extractOPC src/extractObjectPointclouds.cpp)
 
 #common commands for building c++ executables and libraries
 #rosbuild_add_library(${PROJECT_NAME} src/example.cpp)
@@ -41,3 +43,6 @@ rosbuild_add_executable (segment src/get_skel_segments.cpp)
 #rosbuild_add_executable(example examples/example.cpp)
 #target_link_libraries(example ${PROJECT_NAME})
 target_link_libraries (segment -lboost_system)
+target_link_libraries (frameFeatgen -lboost_system)
+target_link_libraries (featgenSeg -lboost_system)
+target_link_libraries (extractOPC -lboost_system)
