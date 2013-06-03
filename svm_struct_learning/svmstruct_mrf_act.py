@@ -1,7 +1,7 @@
 """A module for SVM^python for multiclass MRF learning."""
 import random
 
-# Thomas Finley, tfinley@gmail.com
+# Hema Koppula, hema@cs.cornell.edu
 
 import numpy
 import sys
@@ -27,12 +27,7 @@ global NUM_CLASSES
 global ITER
 global LP_LIST
 global LOSS_WEIGHTS
-global CLASSIFY_METHOD
-global LEARN_METHOD
-global ATTRIBUTE_METHOD
 global LOSS_METHOD
-global OBJECT_MAP_FILE
-global ATTRIBUTE_MAP_FILE
 global SINGLE_FRAME
 global TEMPORAL
 global NODEONLY
@@ -42,11 +37,6 @@ ITER = 0
 NUM_CLASSES = 0
 # default options
 LOSS_METHOD = "micro"
-LEARN_METHOD = "objassoc"
-OBJECT_MAP_FILE = "/opt/ros/unstable/stacks/svm-python-v204/objectMap.txt"
-CLASSIFY_METHOD  = "sum1.IP"
-ATTRIBUTE_METHOD = "false"
-ATTRIBUTE_MAP_FILE = "/opt/ros/unstable/stacks/svm-python-v204/attributeMap.txt"
 TEMPORAL = "false"
 NODEONLY = "false"
 
@@ -132,34 +122,20 @@ def get_C_obj_matrix(num_node_feats, num_edge_feats, num_ass_edge_feats, K, objM
 def parse_parameters(sparm):
     temp_arg_list = sparm.argv
     print sparm.argv
-    global LEARN_METHOD
     global LOSS_METHOD
-    global OBJECT_MAP_FILE
-    global ATTRIBUTE_METHOD
-    global ATTRIBUTE_MAP_FILE
     global SINGLE_FRAME
     global TEMPORAL
     global NODEONLY
     # set default values
     LOSS_METHOD = "micro"
-    LEARN_METHOD = "objassoc"
-    OBJECT_MAP_FILE = "/opt/ros/unstable/stacks/svm-python-v204/objectMap.txt"
     for i in xrange(0,len(sparm.argv)/2):
         #print i,  len(sparm.argv)/2
         opt = temp_arg_list.pop(0)
         val = temp_arg_list.pop(0)
         if(opt == "--l"):
             LOSS_METHOD = val
-        if(opt == "--lm"):
-            #print "setting lm to ", val
-            LEARN_METHOD = val
         if(opt == "--am"):
             print "setting am to ", val
-            ATTRIBUTE_METHOD = val
-        if(opt == "--omf"):
-            OBJECT_MAP_FILE = val
-        if(opt == "--amf"):
-            ATTRIBUTE_MAP_FILE = val
         if(opt == "--sf"):
             SINGLE_FRAME= val
         if(opt == "--temporal"):
@@ -171,12 +147,7 @@ def parse_parameters(sparm):
 
 def parse_parameters_classify(attribute, value):
     
-    global CLASSIFY_METHOD
-    global LEARN_METHOD
     global LOSS_METHOD
-    global OBJECT_MAP_FILE
-    global ATTRIBUTE_METHOD
-    global ATTRIBUTE_MAP_FILE
     global SINGLE_FRAME
     global TEMPORAL
     global NODEONLY
@@ -184,17 +155,6 @@ def parse_parameters_classify(attribute, value):
     #print attribute, value
     if(attribute == "--l"):
         LOSS_METHOD = value
-    if(attribute == "--lm"):
-        LEARN_METHOD = value
-        #print "setting lm to ", LEARN_METHOD
-    if(attribute == "--omf"):
-        OBJECT_MAP_FILE = value
-    if(attribute == "--amf"):
-        ATTRIBUTE_MAP_FILE = value
-    if(attribute == "--cm"):
-        CLASSIFY_METHOD= value
-    if(attribute == "--am"):
-        ATTRIBUTE_METHOD= value
     if(attribute == "--sf"):
         SINGLE_FRAME= value
     if(attribute == "--temporal"):
@@ -2384,7 +2344,6 @@ def classification_score(x,y,sm,sparm):
 
 def classify_example(x, sm, sparm):
     """Returns the classification of an example 'x'."""
-    global CLASSIFY_METHOD
     global SINGLE_FRAME
     global TEMPORAL
     #y = (mat(ones((1,x[0].shape[1]))),x[2],sm.num_classes)
@@ -2395,16 +2354,6 @@ def classify_example(x, sm, sparm):
         l = lp_inference_multiple_frames_sum1_IP(x, sm, sparm, False)
     else:
         l = lp_inference_temporal_sum1_IP(x, sm, sparm, False)
-    '''if(CLASSIFY_METHOD == "sum1.IP"):
-        l = lp_inference_sum1_IP(x,sm,sparm,False)
-    elif(CLASSIFY_METHOD == "sumLE1.IP"):
-        l = lp_inference_sum1_IP(x,sm,sparm,True)
-    elif(CLASSIFY_METHOD == "sum1"):
-        l = lp_inference_sum1(x,sm,sparm)
-    elif(CLASSIFY_METHOD == "qbpo.sum1.IP"):
-        l = lp_inference_qbpo_sum1_IP(x,sm,sparm)
-    elif(CLASSIFY_METHOD == "qbpo"):
-        l = lp_inference_qbpo(x,sm,sparm)'''
    
     return l
 
