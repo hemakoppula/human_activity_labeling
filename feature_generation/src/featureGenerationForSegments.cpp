@@ -71,7 +71,7 @@ void parseChk(bool chk) {
 
 void readSegmentsFile() {
     //const string labelfile = dataLocation + "Segmentation.txt";
-    const string labelfile =  "Segmentation.txt";
+    const string labelfile =  "Segmentation_sampled.txt";
 
     ifstream file((char*) labelfile.c_str(), ifstream::in);
 
@@ -335,8 +335,8 @@ int main(int argc, char** argv) {
 
         vector <string> fileList(data_obj_map[all_files.at(i)].size());
         for (size_t j = 0; j < data_obj_map[all_files.at(i)].size(); j++) {
-            //fileList.at(j) = dataLocation + "/" + all_files.at(i) + "_obj" + data_obj_map[all_files.at(i)].at(j) + ".txt";
-            fileList.at(j) = dataLocation + "/new_object_features/" + all_files.at(i) + "_object_features_" + data_obj_map[all_files.at(i)].at(j) + ".txt";
+            fileList.at(j) = dataLocation + "/" + all_files.at(i) + "_obj" + data_obj_map[all_files.at(i)].at(j) + ".txt";
+           // fileList.at(j) = dataLocation + "/new_object_features/" + all_files.at(i) + "_object_features_" + data_obj_map[all_files.at(i)].at(j) + ".txt";
         }
         vector <string> objPCFileList(data_obj_map[all_files.at(i)].size());
         for (size_t j = 0; j < data_obj_map[all_files.at(i)].size(); j++) {
