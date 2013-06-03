@@ -71,7 +71,7 @@ void parseChk(bool chk) {
 
 void readSegmentsFile() {
     //const string labelfile = dataLocation + "Segmentation.txt";
-    const string labelfile =  "Segmentation.txt";
+    const string labelfile =  "Segmentation_sampled.txt";
 
     ifstream file((char*) labelfile.c_str(), ifstream::in);
 

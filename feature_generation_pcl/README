@@ -2,6 +2,17 @@ If you use data or code, please cite the following:
 
 [1] Learning Human Activities and Object Affordances from RGB-D Videos, Hema S Koppula, Rudhir Gupta, Ashutosh Saxena. International Journal of Robotics Research (IJRR) 2013.
 
+__________________________________________________
+
+To compile:
+
+mkdir build
+cd build
+cmake ..
+make
+
+__________________________________________________
+
 
 
 
@@ -62,8 +73,10 @@ The learning code which uses the frame-level features computes the segment-level
 	Executable: featgenSeg
 	Usage: ./featgenSeg <data_directory> <activity_label_file>
 	Example usage: ./featgenSeg /data/Subject1_rgbd_rawtext/making_cereal/ activityLabel.txt
+    Requires Segmentation_sampled.txt file in the directory from where the code is being run.
 
   ii) Frame-level feature generation:
 	Executable: frameFeatgen
 	Usage: ./frameFeatgen <data_directory> <activity_label_file>
 	Example usage: ./frameFeatgen /data/Subject1_rgbd_rawtext/making_cereal/ activityLabel.txt
+    Requires Segmentation_sampled.txt file in the directory from where the code is being run.
