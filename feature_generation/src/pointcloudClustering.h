@@ -290,7 +290,7 @@ int getClusters(pcl::PointCloud<PointOutT> &cloud, std::vector<pcl::PointCloud<P
         extractEuclideanClusters(*cloud_ptr, clusters_tree_, radius, clusterInds, min_pts_per_cluster, max_pts_per_cluster);
     }
     //extractEuclideanClusters ( *cloud_filtered, *cloud_normals_ptr, clusters_tree_, radius, clusters, angle, min_pts_per_cluster, max_pts_per_cluster);
-    ROS_INFO("Number of clusters found matching the given constraints: %d.", (int) clusterInds.size());
+    cout << "Number of clusters found matching the given constraints: "<< (int) clusterInds.size()<< "." << endl;;
 
 
     int max_cluster_index = getClustersFromPointCloud2(*cloud_ptr, clusterInds, clustersOut);
