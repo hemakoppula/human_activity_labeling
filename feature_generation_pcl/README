@@ -9,8 +9,8 @@ If you use data or code, please cite the following:
 
 Description: code for graph based segmentation methods described in [1] 
 Executable: segment
-Usage: rosrun feature_generation segment <data directory> <activityLabelFile> <method> <threshold>
-Example usage: rosrun feature_generation segment /data/Subject1_rgbd_rawtext/making_cereal/ activityLabel.txt  1 500
+Usage: ./segment <data directory> <activityLabelFile> <method> <threshold>
+Example usage: ./segment /data/Subject1_rgbd_rawtext/making_cereal/ activityLabel.txt  1 500
 
    method : takes the value 1 or 2 
    theshold : values 100, 500 and 1000 were used for the results reported in [1]. 
@@ -43,8 +43,8 @@ Description: This step extracts the pointcloud indices of the objects using the 
 - The points which lie within the image bounding box are clustered and the indices corresponding to the biggest cluster are saved in a text file
 
 Executable: extractOPC
-Usage: rosrun feature_generation extractOPC <data_directory> <activityLabelFile> 
-Example usage: rosrun feature_generation extractOPC /data/Subject1_rgbd_rawtext/making_cereal/ activityLabel.txt
+Usage: ./extractOPC <data_directory> <activityLabelFile> 
+Example usage: ./extractOPC /data/Subject1_rgbd_rawtext/making_cereal/ activityLabel.txt
 
 Input: activityLabelFile file specifying all the activity ids and for each acivity id the following files are required: RGBD text file, object files and global transform file
 The activityLabelFile file along with the other required data files should be present in the specified data directory.
@@ -60,10 +60,10 @@ The learning code which uses the frame-level features computes the segment-level
 
   i) Segment-level feature generation:  
 	Executable: featgenSeg
-	Usage: rosrun feature_generation featgenSeg <data_directory> <activity_label_file>
-	Example usage: rosrun feature_generation featgenSeg /data/Subject1_rgbd_rawtext/making_cereal/ activityLabel.txt
+	Usage: ./featgenSeg <data_directory> <activity_label_file>
+	Example usage: ./featgenSeg /data/Subject1_rgbd_rawtext/making_cereal/ activityLabel.txt
 
   ii) Frame-level feature generation:
 	Executable: frameFeatgen
-	Usage: rosrun feature_generation frameFeatgen <data_directory> <activity_label_file>
-	Example usage: rosrun feature_generation frameFeatgen /data/Subject1_rgbd_rawtext/making_cereal/ activityLabel.txt
+	Usage: ./frameFeatgen <data_directory> <activity_label_file>
+	Example usage: ./frameFeatgen /data/Subject1_rgbd_rawtext/making_cereal/ activityLabel.txt
