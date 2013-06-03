@@ -1,0 +1,23 @@
+svmstruct_mrfi_act Specific Options:
+         --m module_name   ->  the module name, which is 'svmstruct_mrf_act'
+         --sf true/false --> uses each frame/semgnet as an individual example it true; else considers all frames/segments of an activity as one example
+         --temporal true/false --> uses temporal edges if true
+
+Usage: 
+
+
+./svm_python_learn --m svmstruct_mrf_act -c 0.1  -e 0.01 -w 3 --sf false --temporal true train.txt modelFile
+./svm_python_classify --m svmstruct_mrf_act --sf false --temporal true test.txt modelFile predFile
+
+Format of train.txt/test.txt files: Path to one activity_id file per line. These activity_id files correspond to the output (2) of the script run_format_data.sh (refer to the README in feature_generation or feature_generation_pcl folders).
+
+Example train.txt/test.txt :
+
+$ cat train.txt
+/opt/ros/electric/stacks/human_activity_labeling/expts/segments/segmentation1/0510142336.txt
+/opt/ros/electric/stacks/human_activity_labeling/expts/segments/segmentation1/1204173846.txt
+/opt/ros/electric/stacks/human_activity_labeling/expts/segments/segmentation1/1204180612.txt
+
+
+
+
