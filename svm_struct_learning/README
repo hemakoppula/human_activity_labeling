@@ -1,4 +1,5 @@
-svmstruct_mrfi_act Specific Options:
+
+svmstruct_mrf_act Specific Options:
          --m module_name   ->  the module name, which is 'svmstruct_mrf_act'
          --sf true/false --> uses each frame/semgnet as an individual example it true; else considers all frames/segments of an activity as one example
          --temporal true/false --> uses temporal edges if true
