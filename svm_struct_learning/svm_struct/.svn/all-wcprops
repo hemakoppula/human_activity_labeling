@@ -1,0 +1,47 @@
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/svn/repos/object_affordance_detection/!svn/ver/41/svm-python-v204/svm_struct
+END
+svm_struct_learn.h
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/svn/repos/object_affordance_detection/!svn/ver/11/svm-python-v204/svm_struct/svm_struct_learn.h
+END
+svm_struct_common.c
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/svn/repos/object_affordance_detection/!svn/ver/11/svm-python-v204/svm_struct/svm_struct_common.c
+END
+svm_struct_classify.c
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/svn/repos/object_affordance_detection/!svn/ver/11/svm-python-v204/svm_struct/svm_struct_classify.c
+END
+svm_struct_common.h
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/svn/repos/object_affordance_detection/!svn/ver/11/svm-python-v204/svm_struct/svm_struct_common.h
+END
+svm_struct_learn.c
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/svn/repos/object_affordance_detection/!svn/ver/11/svm-python-v204/svm_struct/svm_struct_learn.c
+END
+Makefile
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svn/repos/object_affordance_detection/!svn/ver/11/svm-python-v204/svm_struct/Makefile
+END
+svm_struct_main.c
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/svn/repos/object_affordance_detection/!svn/ver/11/svm-python-v204/svm_struct/svm_struct_main.c
+END

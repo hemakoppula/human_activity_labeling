@@ -1,0 +1,161 @@
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svn/repos/object_affordance_detection/!svn/ver/609/svm-python-v204/pyobjs
+END
+svmapi.c
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svn/repos/object_affordance_detection/!svn/ver/12/svm-python-v204/pyobjs/svmapi.c
+END
+model.c
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svn/repos/object_affordance_detection/!svn/ver/12/svm-python-v204/pyobjs/model.c
+END
+kernelparm.c
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svn/repos/object_affordance_detection/!svn/ver/12/svm-python-v204/pyobjs/kernelparm.c
+END
+sparse.h
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svn/repos/object_affordance_detection/!svn/ver/12/svm-python-v204/pyobjs/sparse.h
+END
+svmapi.h
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svn/repos/object_affordance_detection/!svn/ver/12/svm-python-v204/pyobjs/svmapi.h
+END
+model.h
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svn/repos/object_affordance_detection/!svn/ver/12/svm-python-v204/pyobjs/model.h
+END
+kernelparm.h
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svn/repos/object_affordance_detection/!svn/ver/12/svm-python-v204/pyobjs/kernelparm.h
+END
+structmodel.c
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svn/repos/object_affordance_detection/!svn/ver/609/svm-python-v204/pyobjs/structmodel.c
+END
+setup.py
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svn/repos/object_affordance_detection/!svn/ver/12/svm-python-v204/pyobjs/setup.py
+END
+constraints.c
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svn/repos/object_affordance_detection/!svn/ver/12/svm-python-v204/pyobjs/constraints.c
+END
+svmapi_globals.h
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svn/repos/object_affordance_detection/!svn/ver/12/svm-python-v204/pyobjs/svmapi_globals.h
+END
+structmodel.h
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svn/repos/object_affordance_detection/!svn/ver/12/svm-python-v204/pyobjs/structmodel.h
+END
+pyobjs.h
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svn/repos/object_affordance_detection/!svn/ver/12/svm-python-v204/pyobjs/pyobjs.h
+END
+constraints.h
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svn/repos/object_affordance_detection/!svn/ver/12/svm-python-v204/pyobjs/constraints.h
+END
+array.c
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svn/repos/object_affordance_detection/!svn/ver/12/svm-python-v204/pyobjs/array.c
+END
+document.c
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/svn/repos/object_affordance_detection/!svn/ver/12/svm-python-v204/pyobjs/document.c
+END
+sample.c
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svn/repos/object_affordance_detection/!svn/ver/12/svm-python-v204/pyobjs/sample.c
+END
+sparm.c
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svn/repos/object_affordance_detection/!svn/ver/12/svm-python-v204/pyobjs/sparm.c
+END
+document.h
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/svn/repos/object_affordance_detection/!svn/ver/12/svm-python-v204/pyobjs/document.h
+END
+array.h
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svn/repos/object_affordance_detection/!svn/ver/12/svm-python-v204/pyobjs/array.h
+END
+default.c
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/svn/repos/object_affordance_detection/!svn/ver/12/svm-python-v204/pyobjs/default.c
+END
+sample.h
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svn/repos/object_affordance_detection/!svn/ver/12/svm-python-v204/pyobjs/sample.h
+END
+sparm.h
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svn/repos/object_affordance_detection/!svn/ver/12/svm-python-v204/pyobjs/sparm.h
+END
+default.h
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/svn/repos/object_affordance_detection/!svn/ver/12/svm-python-v204/pyobjs/default.h
+END
+Makefile
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svn/repos/object_affordance_detection/!svn/ver/12/svm-python-v204/pyobjs/Makefile
+END
+sparse.c
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svn/repos/object_affordance_detection/!svn/ver/12/svm-python-v204/pyobjs/sparse.c
+END

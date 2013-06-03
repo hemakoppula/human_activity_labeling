@@ -1,0 +1,71 @@
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/svn/repos/object_affordance_detection/!svn/ver/274/svm-python-v204/svm_light
+END
+LICENSE.txt
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svn/repos/object_affordance_detection/!svn/ver/11/svm-python-v204/svm_light/LICENSE.txt
+END
+svm_loqo.c
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svn/repos/object_affordance_detection/!svn/ver/11/svm-python-v204/svm_light/svm_loqo.c
+END
+svm_classify.c
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svn/repos/object_affordance_detection/!svn/ver/11/svm-python-v204/svm_light/svm_classify.c
+END
+svm_common.h
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svn/repos/object_affordance_detection/!svn/ver/11/svm-python-v204/svm_light/svm_common.h
+END
+kernel.h
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svn/repos/object_affordance_detection/!svn/ver/11/svm-python-v204/svm_light/kernel.h
+END
+svm_learn.c
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svn/repos/object_affordance_detection/!svn/ver/11/svm-python-v204/svm_light/svm_learn.c
+END
+svm_learn_main.c
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/repos/object_affordance_detection/!svn/ver/11/svm-python-v204/svm_light/svm_learn_main.c
+END
+svm_learn.h
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svn/repos/object_affordance_detection/!svn/ver/11/svm-python-v204/svm_light/svm_learn.h
+END
+Makefile
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svn/repos/object_affordance_detection/!svn/ver/11/svm-python-v204/svm_light/Makefile
+END
+svm_common.c
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svn/repos/object_affordance_detection/!svn/ver/11/svm-python-v204/svm_light/svm_common.c
+END
+svm_hideo.c
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svn/repos/object_affordance_detection/!svn/ver/11/svm-python-v204/svm_light/svm_hideo.c
+END
