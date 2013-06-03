@@ -343,7 +343,7 @@ int main(int argc, char** argv) {
 
     dataLocation =  (string)argv[1] + "/";
     string mirrored_dataLocation = "";//"data/"; //+ (string)argv[1] + "_m/";
-    actfile = "activityLabel.txt";//(string)argv[1];
+    actfile = (string)argv[2]; //"activityLabel.txt";
     readDataActMap();
 
 
@@ -438,7 +438,7 @@ int main(int argc, char** argv) {
                     }
                     
                     string fname = dataLocation + "/objects/" + all_files.at(i) + "_obj" +  onum.str() + ".txt";
-                    ofile.open(fname.c_str());
+                    ofile.open(fname.c_str(),  std::fstream::app);
                     ofile << all_files[i] << "," << status << "," << onum.str() << "," ;
                     for(size_t t = 0; t < cloudInds.indices.size(); t ++){
                         ofile << cloudInds.indices.at(t) << ",";
