@@ -71,7 +71,7 @@ The learning code which uses the frame-level features computes the segment-level
     Requires Segmentation_sampled.txt file in the directory from where the code is being run.
 
 
-5) Format segmetn features for learning/inference
+5) Format segment features for learning/inference
 
 Description: script for converting the data_*.txt feature files to the format required by the learning/inference code. 
 Note: This code binarizes the features, therefore use all feature data as input.
