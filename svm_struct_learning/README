@@ -20,5 +20,9 @@ $ cat train.txt
 /opt/ros/electric/stacks/human_activity_labeling/expts/segments/segmentation1/1204180612.txt
 
 
+-----------------------------
 
+To compile: 
+1) Run install_dependencies.sh 
+2) Run make in svm_struct_learning and svm_struct_learning/pyobjs directories 
 
