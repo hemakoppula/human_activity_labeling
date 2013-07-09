@@ -2,8 +2,8 @@
 
 export
 
-CC = gcc-4.4
-LD = gcc-4.4
+CC = gcc #gcc-4.4
+LD = gcc #gcc-4.4
 #CC = attolcc -mempro -perfpro -block -proc -- gcc
 #LD = attolcc -mempro -perfpro -block -proc -- gcc
 CFLAGS = -O3 -fomit-frame-pointer -ffast-math -Wall 
@@ -83,16 +83,16 @@ svm_struct_clean:
 #-------------------------#
 
 $(CLASS_TARGET): svm_light_hideo_noexe svm_struct_noexe svm_struct_api.o svm_struct/svm_struct_classify.o svm_struct/svm_struct_common.o svm_struct/svm_struct_main.o $(PY_OBJS)
-	$(LD) $(LDFLAGS) svm_struct_api.o svm_struct/svm_struct_classify.o svm_light/svm_common.o svm_struct/svm_struct_common.o $(PY_OBJS) $(PYTHON_LD_FLAGS) $(LIBS) -o $@
+	$(LD) $(LDFLAGS) svm_struct_api.o svm_struct/svm_struct_classify.o svm_light/svm_common.o svm_struct/svm_struct_common.o $(PY_OBJS) $(PYTHON_LD_FLAGS) $(LIBS) -lm -o $@
 
 $(TRAIN_TARGET)_loqo: svm_light_loqo_noexe svm_struct_noexe svm_struct_api.o svm_struct/svm_struct_learn.o svm_struct/svm_struct_common.o svm_struct/svm_struct_main.o $(PY_OBJS)
-	$(LD) $(LDFLAGS) svm_struct/svm_struct_learn.o svm_struct_api.o svm_light/svm_loqo.o svm_light/pr_loqo/pr_loqo.o svm_light/svm_learn.o svm_light/svm_common.o svm_struct/svm_struct_common.o svm_struct/svm_struct_main.o $(PY_OBJS) $(PYTHON_LD_FLAGS) $(LIBS) -o $(TRAIN_TARGET)
+	$(LD) $(LDFLAGS) svm_struct/svm_struct_learn.o svm_struct_api.o svm_light/svm_loqo.o svm_light/pr_loqo/pr_loqo.o svm_light/svm_learn.o svm_light/svm_common.o svm_struct/svm_struct_common.o svm_struct/svm_struct_main.o $(PY_OBJS) $(PYTHON_LD_FLAGS) $(LIBS) -lm -o $(TRAIN_TARGET)
 
 $(TRAIN_TARGET)_hideo: $(TRAIN_TARGET)_% : svm_light_%_noexe svm_struct_noexe svm_struct_api.o  svm_struct/svm_struct_learn.o svm_struct/svm_struct_common.o svm_struct/svm_struct_main.o $(PY_OBJS)
-	$(LD) $(LDFLAGS) svm_struct/svm_struct_learn.o svm_struct_api.o svm_light/svm_$*.o svm_light/svm_learn.o svm_light/svm_common.o svm_struct/svm_struct_common.o svm_struct/svm_struct_main.o $(PY_OBJS) $(PYTHON_LD_FLAGS) $(LIBS) -o $(TRAIN_TARGET)
+	$(LD) $(LDFLAGS) svm_struct/svm_struct_learn.o svm_struct_api.o svm_light/svm_$*.o svm_light/svm_learn.o svm_light/svm_common.o svm_struct/svm_struct_common.o svm_struct/svm_struct_main.o $(PY_OBJS) $(PYTHON_LD_FLAGS) $(LIBS) -lm -o $(TRAIN_TARGET)
 
 $(PY_OBJS): %.o : %.c %.h
 	$(CC) -c $(CFLAGS) $(PYTHON_CC_FLAGS) $< -o $@
 
 svm_struct_api.o: svm_struct_api.c svm_struct_api.h svm_struct_api_types.h svm_struct/svm_struct_common.h
-	$(CC) -c $(CFLAGS) $(PYTHON_CC_FLAGS) -DDEFAULT_MODULE=$(DEFAULT_MODULE) $< -o $@
+	$(CC) -c $(CFLAGS) $(PYTHON_CC_FLAGS) -DDEFAULT_MODULE=$(DEFAULT_MODULE) $< -o $@ 
