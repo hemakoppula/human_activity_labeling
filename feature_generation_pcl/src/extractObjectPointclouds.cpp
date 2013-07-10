@@ -175,6 +175,7 @@ void readDataActMapOld() {
 
 
 void saveTablePC( pcl::PointCloud<PointT> &cloud, pcl::PointIndices &tablePointInds  ){
+  if(tablePointInds.indices.size() > 1){
   pcl::PointCloud<PointT> table;
   table.height = 1; 
   table.width = tablePointInds.indices.size();
@@ -185,7 +186,8 @@ void saveTablePC( pcl::PointCloud<PointT> &cloud, pcl::PointIndices &tablePointI
     table.points.at(i).z = cloud.points.at(tablePointInds.indices.at(i)).z;
     table.points.at(i).rgb = cloud.points.at(tablePointInds.indices.at(i)).rgb;
   }
-  pcl::io::savePCDFile("table.pcd", table);
+    pcl::io::savePCDFile("table.pcd", table);
+  }
 }
 
 void createPointCloud(int ***IMAGE, string transformfile, pcl::PointCloud<PointT> &cloud, map<int, int> &tablePoints) {
@@ -214,7 +216,7 @@ void createPointCloud(int ***IMAGE, string transformfile, pcl::PointCloud<PointT
     // find table indices
     pcl::PointIndices tablePointInds;
     getTableInds(cloud, tablePointInds);
-    saveTablePC(cloud, tablePointInds);
+    //saveTablePC(cloud, tablePointInds);
 
     cout << "size of table :" << tablePointInds.indices.size() << endl;
     for (size_t i = 0; i < tablePointInds.indices.size(); i++)
