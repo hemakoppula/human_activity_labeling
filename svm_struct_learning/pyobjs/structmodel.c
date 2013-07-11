@@ -82,10 +82,10 @@ static void StructModel_dealloc(svms_StructModelObject *self) {
 
 static PyObject *StructModel_getw(svms_StructModelObject *self,void *closure) {
   if (self->sm->w == NULL) {
-    printf("going here!!!\n");
+    //printf("going here!!!\n");
     Py_RETURN_NONE;
   }
-    printf("going here2!!!\n");
+    //printf("going here2!!!\n");
   return (PyObject*)Array_FromArray(self->sm->w, self->sm->sizePsi, 1,
 				    AT_DOUBLE);
 }

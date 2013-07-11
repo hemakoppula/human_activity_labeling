@@ -556,7 +556,7 @@ def read_examples_multiple_frames(filename,sparm):
 
         Y_m_s = csr_matrix(Y_multiple,dtype='d');
         X_multiple = X_multiple.tocsr()
-        xd =  X_multiple.todense()
+        #xd =  X_multiple.todense()
         #numpy.savetxt('matrixX.txt',xd,delimiter=' ',fmt='%-2.1f')
         #numpy.savetxt('matrixY.txt',Y_multiple,delimiter=' ',fmt='%-2.1f')
         print Y_m_s.shape
