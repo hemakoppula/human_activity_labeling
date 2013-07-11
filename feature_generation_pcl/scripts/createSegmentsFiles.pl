@@ -1,6 +1,6 @@
 $home=shift;
 $method=shift;
-$dir = "$home/object_affordance_detection/svm-python-v204/data-all/alldata-fixed/".$method;
+$dir = "$home/data/".$method;
 
 #$r = `ls 1*.txt`;
 $r = `ls *.txt | grep "^[1|0].*"`;
