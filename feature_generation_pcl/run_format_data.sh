@@ -4,6 +4,8 @@ rm scripts/data_*
 cp data_* scripts/
 cp Segmentation_labeling.txt scripts/
 
+CWD=$(pwd)
+
 cd scripts
 rm -f nohup.out
 nohup matlab -nodesktop -nosplash -r binfeats
@@ -11,7 +13,7 @@ nohup matlab -nodesktop -nosplash -r binfeats
 
 perl format_svm_seg.pl Segmentation_labeling.txt . 1
 mkdir segments
-perl createSegmentsFiles.pl '/opt/ros/electric/stacks' $M
+perl createSegmentsFiles.pl $DIR $M
 mkdir -p $DIR/segments/$M
 mv -f segments/* $DIR/segments/$M
 mkdir -p $DIR/data/$M
