@@ -1,6 +1,11 @@
+#! /bin/bash
+
+set -e    # Stop on errors
+set -x    # Show commands as they are executed
+
 DIR=$1
 M=$2
-rm scripts/data_*
+rm -f scripts/data_*
 cp data_* scripts/
 cp Segmentation_labeling.txt scripts/
 
