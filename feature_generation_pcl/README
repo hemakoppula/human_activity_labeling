@@ -97,3 +97,6 @@ Input: segment feature files data_*.txt generated from featgenSeg, Segmentation_
 Output: 1) formatted feature files in output_dir/data/segmentation_method_name folder
         2) a file in  output_dir/segments/segmentation_method_name folder which lists the files corresponding to each activity_id
 
+
+Note: to use with XVFB on headless nodes / via ssh / in screen, modify command like this:
+  DISPLAY:=2 ./run_format_data.sh /opt/ros/electric/stacks/human_activity_labeling/expts/ segmentation1
