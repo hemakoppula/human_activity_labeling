@@ -33,6 +33,8 @@ for filename in $filenames; do
 done
 ln -fs "../scripts/binfeats.m"
 ln -fs "../scripts/getBinStumps.m"
+ln -fs "../scripts/classmap.txt"
+ln -fs "../scripts/affmap.txt"
 ls binfeats.m getBinStumps.m || ( echo "Can't access binfeats.m or getBinStumps.m."; exit 1 )
 
 
