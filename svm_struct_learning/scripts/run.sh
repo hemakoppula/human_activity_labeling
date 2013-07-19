@@ -1,28 +1,31 @@
 #!/bin/bash
+
+set -e      # Stop on errors
+#set -x      # Print commands before they are run
+
 descrip="perfect new data c= 0.1, 4 folds, normalized features"
 #method=sum1.IP
 c=0.1
 e=0.01
 w=3
 pid=(0 0 0 0)
-for i in `seq 1 4`
-do
-#modelFile=`ls -lrt fold$i/imodels/model.c4.0.m* | cut -f 3 -d '/'| tail -1`
+for i in `seq 1 4`; do
+    #modelFile=`ls -lrt fold$i/imodels/model.c4.0.m* | cut -f 3 -d '/'| tail -1`
 
-suffix=c$c.e$e.w$w
-modelFile=model.$suffix
+    suffix=c$c.e$e.w$w
+    modelFile=model.$suffix
 
-modelFolder=fold$i/models
-#ls -lh fold$i/imodels/$modelFile
-echo "out.$method.$modelFile" >> fold$i/lastout.txt
-#mkdir fold$i/logs
-#mkdir fold$i/models
-#mkdir fold$i/imodels
-#mkdir fold$i/pred
-sh run_svm.sh $c $e $i $modelFile $modelFolder $suffix $w &
-p=$!
-pid[$i]=$p
-#sleep 60
+    modelFolder=fold$i/models
+    #ls -lh fold$i/imodels/$modelFile
+    echo "out.$method.$modelFile" >> fold$i/lastout.txt
+    #mkdir fold$i/logs
+    #mkdir fold$i/models
+    #mkdir fold$i/imodels
+    #mkdir fold$i/pred
+    sh run_svm.sh $c $e $i $modelFile $modelFolder $suffix $w &
+    p=$!
+    pid[$i]=$p
+    #sleep 60
 done 
   
 ps
@@ -34,7 +37,7 @@ wait ${pid[4]}
 echo "processes completed!"
 perl get_avg_pr.pl out.$modelFile > avg_pr.$modelFile
 method=$suffix.$cmethod
-perl ../get_confusion_matrix.pl out.$cmethod.$modelFile $method  > confusionM.$method
+perl get_confusion_matrix.pl out.$cmethod.$modelFile $method  > confusionM.$method
 
 rm runinfo
 echo $HOSTNAME >> runinfo
