@@ -31,7 +31,7 @@ perl get_avg_pr.pl out.$modelFile > avg_pr.$modelFile
 method=$suffix.$cmethod
 perl get_confusion_matrix.pl out.$cmethod.$modelFile $method  > confusionM.$method
 
-rm runinfo
+rm -f runinfo
 echo $HOSTNAME >> runinfo
 pwd >> runinfo
 
@@ -40,8 +40,9 @@ echo "method : $method" >> runinfo
 echo "loss: $loss" >> runinfo
 
 echo "errors:" >> runinfo
+echo >> errfile    # make sure the file exists
 cat errfile >> runinfo
-rm errfile
+rm -f errfile
 
 echo "" >> runinfo
 echo "~~~~~~~~~~~~~~~" >> runinfo
