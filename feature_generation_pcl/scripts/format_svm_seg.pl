@@ -22,7 +22,7 @@ $outfile="out.txt";
 
 
 %classmap = ();
-open(F,"classmap.txt");
+open(F,"classmap.txt") or die("Could not open classmap.txt. Is it in the right directory?");
 $count = 0;
 while(<F>){
   chomp();
@@ -33,7 +33,7 @@ close(F);
 $numAct = keys(%classmap);
 
 %affmap = ();;
-open(F,"affmap.txt");
+open(F,"affmap.txt") or die("Could not open affmap.txt. Is it in the right directory?");
 $count = 0;
 while(<F>){
   chomp();
@@ -52,7 +52,7 @@ $numAff = keys(%affmap) ;
 
 
 
-open(F,$data_skel);
+open(F,$data_skel) or die("Could not open " . $data_skel);
 while(<F>){
   chomp;
   ($sn,$fn,@feats) = split/,/,$_;
@@ -63,7 +63,7 @@ while(<F>){
 }
 close(F);
 
-open(F,$data_obj);
+open(F,$data_obj) or die("Could not open " . $data_obj);
 while(<F>){
   chomp;
   ($sn,$fn,$ob,$a,$b,@feats) = split/,/,$_;
@@ -75,7 +75,7 @@ while(<F>){
 }
 close(F);
 
-open(F,$data_obj_temporal);
+open(F,$data_obj_temporal) or die("Could not open " . $data_obj_temporal);
 while(<F>){
   chomp;
   ($sn,$fn1,$fn2,$ob,@feats) = split/,/,$_;
@@ -85,7 +85,7 @@ while(<F>){
 }
 close(F);
 
-open(F,$data_skel_temporal);
+open(F,$data_skel_temporal) or die("Could not open " . $data_skel_temporal);
 while(<F>){
   chomp;
   ($sn,$fn1,$fn2,@feats) = split/,/,$_;
@@ -96,7 +96,7 @@ while(<F>){
 close(F);
 
 
-open(F,$data_skel_obj);
+open(F,$data_skel_obj) or die("Could not open " . $data_skel_obj);
 while(<F>){
   chomp;
   ($sn,$fn,$ob,@feats) = split/,/,$_;
@@ -108,7 +108,7 @@ while(<F>){
 }
 close(F);
 
-open(F,$data_obj_obj);
+open(F,$data_obj_obj) or die("Could not open " . $data_obj_obj);
 while(<F>){
   chomp;
   ($sn,$fn,$o1,$o2,@feats) = split/,/,$_;

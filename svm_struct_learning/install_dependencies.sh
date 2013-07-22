@@ -1,3 +1,5 @@
+#! /bin/bash -x
+
 set -e
 wget http://ftp.gnu.org/gnu/glpk/glpk-4.45.tar.gz
 tar -xvzf glpk-4.45.tar.gz

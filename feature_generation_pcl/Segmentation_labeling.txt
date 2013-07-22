@@ -800,14 +800,6 @@
 0505003237,6,placing,stationary,placeable
 0505003237,7,reaching,reachable,stationary
 0505003237,8,closing,closeable,stationary
-0505003751,1,null,stationary,stationary
-0505003751,2,reaching,reachable,stationary
-0505003751,3,opening,openable,stationary
-0505003751,4,reaching,containable,reachable
-0505003751,5,moving,stationary,movable
-0505003751,6,placing,stationary,placeable
-0505003751,7,reaching,reachable,stationary
-0505003751,8,closing,closeable,stationary
 0510172725,1,null,stationary
 0510172725,2,reaching,reachable
 0510172725,3,moving,movable
@@ -1197,11 +1189,3 @@
 0510180532,6,placing,stationary,placeable
 0510180532,7,reaching,reachable,stationary
 0510180532,8,closing,closeable,stationary
-0510181539,1,null,stationary,stationary
-0510181539,2,reaching,reachable,stationary
-0510181539,3,opening,openable,stationary
-0510181539,4,reaching,stationary,reachable
-0510181539,5,moving,stationary,movable
-0510181539,6,placing,stationary,placeable
-0510181539,7,reaching,reachable,stationary
-0510181539,8,closing,closeable,stationary

@@ -1,0 +1,50 @@
+#! /bin/bash
+
+set -e    # Abort on any errors
+#set -x    # Show commands as they are run
+
+echo "Warning: Do not use this version yet, use parallel_featgenSeg instead (frameFeatgen is not yet production ready)."
+exit 1
+
+
+# Get args
+if [ $# -lt 3 ]; then
+  echo "Usage: `basename $0` <path/to/frameFeatgen executable> <path/to/data_dir> <experiment directory for saving results>"
+  exit 1
+fi
+
+frameFeatgen="$1"
+data_dir="$2"
+experiment_dir="$3"
+
+
+
+# Sanity checks for necessary files, set up links to executable and data directory
+cd "$experiment_dir"        || ( echo "$experiment_dir does not exist. Create it first."; exit 1 )
+ls activities               || ( echo "Could not find 'activities' file in $experiment_dir. Create it first."; exit 1 )
+ls Segmentation_sampled.txt || ( echo "Could not find 'Segmentation_sampled.txt' file in $experiment_dir. Create it first."; exit 1 )
+ln -fs "../$frameFeatgen" linked_frameFeatgen
+ln -fs "../$data_dir"   linked_data_dir
+
+
+
+function runone() {
+    set -e
+    act="$1"
+    mkdir "dir_$1"
+    cd "dir_$1"
+    ln -s ../Segmentation_sampled.txt
+    echo "Starting: $act"
+    ( time ../linked_frameFeatgen ../linked_data_dir "$act" ) > frameFeatgen.log 2>&1
+    echo "Finished: $act"
+}
+export -f runone
+
+
+
+parallel -j 16 -i bash -c "runone {}" -- `cat activities`
+
+filenames="data_obj_feats.txt data_obj_obj_feats.txt data_skel_feats.txt data_skel_obj_feats.txt data_temporal_obj_feats.txt data_temporal_skel_feats.txt"
+for filename in $filenames; do
+    cat */$filename > $filename
+done

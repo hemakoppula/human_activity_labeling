@@ -24,12 +24,12 @@ Usage: ./segment <data directory> <activityLabelFile> <method> <threshold>
 Example usage: ./segment /data/Subject1_rgbd_rawtext/making_cereal/ activityLabel.txt  1 500
 
    method : takes the value 1 or 2 
-   theshold : values 100, 500 and 1000 were used for the results reported in [1]. 
+   threshold : values 100, 500 and 1000 were used for the results reported in [1]. 
 
-Input: activityLabelFile specifying all the activity ids and for each acivity id the following files are required: RGBD text file, skeleton file and global transform file
+Input: activityLabelFile specifying all the activity ids and for each activity id the following files are required: RGBD text file, skeleton file and global transform file
 The activityLabelFile file along with the other required data files should be present in the specified data directory. 
 Output: File : Segmentation.txt 
-        Format: <id>;<segment_number>:<comma seperated leist of frame numbers>;<segment_number>:<comma seperated leist of frame numbers>;... 
+        Format: <id>;<segment_number>:<comma separated list of frame numbers>;<segment_number>:<comma separated list of frame numbers>;... 
 
 2) Script to post-process generated segmentations.
 
@@ -57,16 +57,16 @@ Executable: extractOPC
 Usage: ./extractOPC <data_directory> <activityLabelFile> 
 Example usage: ./extractOPC /data/Subject1_rgbd_rawtext/making_cereal/ activityLabel.txt
 
-Input: activityLabelFile file specifying all the activity ids and for each acivity id the following files are required: RGBD text file, object files and global transform file
+Input: activityLabelFile file specifying all the activity ids and for each activity id the following files are required: RGBD text file, object files and global transform file
 The activityLabelFile file along with the other required data files should be present in the specified data directory.
-Output: object indices files in data_drectory/objects/ directory (the objects directory needs to be created before running this code).
+Output: object indices files in data_directory/objects/ directory (the objects directory needs to be created before running this code).
 
 
 
 4) Feature Generation
    
-Description: code for generating features described in [1]. The segment features can be directily generated for a fixed segmentation. 
-We provide both segement-level and frame-level feature generation code and the corresponding learning code. 
+Description: code for generating features described in [1]. The segment features can be directly generated for a fixed segmentation. 
+We provide both segment-level and frame-level feature generation code and the corresponding learning code. 
 The learning code which uses the frame-level features computes the segment-level features on the fly and hence is more flexible. 
 
   i) Segment-level feature generation:  
@@ -80,6 +80,8 @@ The learning code which uses the frame-level features computes the segment-level
 	Usage: ./frameFeatgen <data_directory> <activity_label_file>
 	Example usage: ./frameFeatgen /data/Subject1_rgbd_rawtext/making_cereal/ activityLabel.txt
     Requires Segmentation_sampled.txt file in the directory from where the code is being run.
+Output: features in the following text files: data_obj_feats.txt data_obj_obj_feats.txt data_skel_feats.txt data_skel_obj_feats.txt data_temporal_obj_feats.txt data_temporal_skel_feats.txt
+
 
 
 5) Format segment features for learning/inference
@@ -92,6 +94,9 @@ Usage: run_format_data.sh <output directory> <segmentation_method_name>
 Example: sh run_format_data.sh /opt/ros/electric/stacks/human_activity_labeling/expts/ segmentation1
 
 Input: segment feature files data_*.txt generated from featgenSeg, Segmentation_labeling.txt file
-Output: 1) formated feature files in output_dir/data/segmentation_method_name folder
+Output: 1) formatted feature files in output_dir/data/segmentation_method_name folder
         2) a file in  output_dir/segments/segmentation_method_name folder which lists the files corresponding to each activity_id
 
+
+Note: to use with XVFB on headless nodes / via ssh / in screen, modify command like this:
+  DISPLAY:=2 ./run_format_data.sh /opt/ros/electric/stacks/human_activity_labeling/expts/ segmentation1
