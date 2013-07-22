@@ -9,10 +9,10 @@ c=0.1
 e=0.01
 w=3
 pid=(0 0 0 0)
-for i in `seq 1 4`; do
-    suffix=c$c.e$e.w$w
-    modelFile=model.$suffix
+suffix=c$c.e$e.w$w
+modelFile=model.$suffix
 
+for i in `seq 1 4`; do
     modelFolder=fold$i/models
     echo "out.$method.$modelFile" >> fold$i/lastout.txt
     sh run_svm.sh $c $e $i $modelFile $modelFolder $suffix $w &
@@ -29,7 +29,7 @@ wait ${pid[4]}
 echo "processes completed!"
 perl get_avg_pr.pl out.$modelFile > avg_pr.$modelFile
 method=$suffix.$cmethod
-perl get_confusion_matrix.pl out.$cmethod.$modelFile $method  > confusionM.$method
+perl get_confusion_matrix.pl .  > confusionM.$method
 
 rm -f runinfo
 echo $HOSTNAME >> runinfo
