@@ -95,3 +95,15 @@ Input: segment feature files data_*.txt generated from featgenSeg, Segmentation_
 Output: 1) formated feature files in output_dir/data/segmentation_method_name folder
         2) a file in  output_dir/segments/segmentation_method_name folder which lists the files corresponding to each activity_id
 
+
+
+6) Skeleton Visualization
+
+Description: code to visualize the skeleton in the 3D pointcloud.
+Usage: ./skelViewer <data_path> <activity_id> <frame_number>
+Example: ./skelViewer /data/Subject1_rgbd_rawtext/making_cereal/ 1204142055 1
+         This shows the RGBD pointcloud and the skeleton corresponding to the first frame of the activity 1204142055
+
+Input: The following files for the specified activity id are required to be present in the specified data directory: RGBD text file, skeleton file and global transform file 
+ 
+
