@@ -332,6 +332,48 @@ void getMaxCluster(pcl::PointCloud<PointT> &cloud_in, pcl::PointIndices & indice
 
 }
 
+void getMaxConsistentCluster(pcl::PointCloud<PointT> &cloud_in, pcl::PointIndices & indices, pcl::PointXYZ &centroid){
+       // convert to PointXYZRGBCamSL format
+    pcl::PointCloud<PointOutT> cloud;
+    convert(cloud_in, cloud);
+
+    std::vector<pcl::PointCloud<PointT> > clustersOut;
+    std::vector<pcl::PointIndices> clusterInds;
+    int max_cluster_index = getClusters(cloud, clustersOut, clusterInds, false);
+    cout << "max cluster index = " << max_cluster_index << endl;
+    //int max_cluster_index = getClustersFromPointCloud2(*cloud_filtered, clusters, clustersOut);
+    double mindistance = 100000000;
+    int mindistanceindex = max_cluster_index;
+    vector<pcl::PointXYZ>  centers ;
+    cout << "num clusters:" << clustersOut.size() << endl;
+    cout << "prev centroid: " << centroid.x << "," << centroid.y << "," << centroid.z << endl;
+    for (int i = 0; i < clustersOut.size() ; i++){
+      pcl::PointXYZ c (0,0,0) ;
+      for (int p = 0; p < clustersOut.at(i).points.size(); p ++){
+        c.x += clustersOut.at(i).points.at(p).x;
+        c.y += clustersOut.at(i).points.at(p).y;
+        c.z += clustersOut.at(i).points.at(p).z;
+      }
+      c.x = c.x/clustersOut.at(i).points.size(); 
+      c.y = c.y/clustersOut.at(i).points.size(); 
+      c.z = c.z/clustersOut.at(i).points.size(); 
+      centers.push_back(c);
+      double distance =  pow(c.x- centroid.x, 2 )+ pow (c.y- centroid.y, 2 ) +  pow (c.z- centroid.z, 2 );
+      if(distance < mindistance) { mindistanceindex = i; mindistance = distance;}
+    }
+    if (! (centroid.x == 0 && centroid.y ==0 && centroid.z ==0)) {
+       max_cluster_index = mindistanceindex; 
+       cout << "index changed" << endl;
+    }
+    cout << "min distance index = " << mindistanceindex << endl;
+    cout << "selected index = " << max_cluster_index << endl;
+    cloud_in = clustersOut.at(max_cluster_index);
+    indices = clusterInds.at(max_cluster_index);
+    centroid = centers.at(max_cluster_index); 
+    cout << "centroid: " << centroid.x << "," << centroid.y << "," << centroid.z << endl;
+
+}
+
 void computeCentroid(pcl::PointXYZ &centroid, pcl::PointCloud<PointT> &cloud) {
 
     centroid.x = 0;

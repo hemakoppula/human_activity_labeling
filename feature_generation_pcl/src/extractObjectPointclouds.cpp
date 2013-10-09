@@ -225,7 +225,7 @@ void createPointCloud(int ***IMAGE, string transformfile, pcl::PointCloud<PointT
 }
 
 
-void filterCloud(pcl::PointCloud<PointT> &cloud, map<int, int> &tablePoints, string transformfile, pcl::PointIndices & objIndices ) {
+void filterCloud(pcl::PointCloud<PointT> &cloud, map<int, int> &tablePoints, string transformfile, pcl::PointIndices & objIndices, pcl::PointXYZ &centroid ) {
 
     // remove points too far from the camera (eg walls)
     PointT origin;
@@ -264,7 +264,7 @@ void filterCloud(pcl::PointCloud<PointT> &cloud, map<int, int> &tablePoints, str
 
     
     // cluster and then retain the biggest cluster
-    getMaxCluster(cloud, clusterIndices);
+    getMaxConsistentCluster(cloud, clusterIndices, centroid);
     /// 
     objIndices.indices.clear();
     for(size_t i = 0 ; i < clusterIndices.indices.size(); i ++){
@@ -286,7 +286,7 @@ void checkIndices(pcl::PointCloud<PointT> & cloud, pcl::PointCloud<PointT> & ful
     }
 }
 
-int getObjectPointCloud(pcl::PointCloud<PointT> &fullcloud, map<int, int> &tablePoints, string transformfile, vector<double> features, pcl::PointIndices &objIndices, string fn) {
+int getObjectPointCloud(pcl::PointCloud<PointT> &fullcloud, map<int, int> &tablePoints, string transformfile, vector<double> features, pcl::PointIndices &objIndices, string fn, pcl::PointXYZ &centroid ) {
     double minX = features.at(2);
     double minY = features.at(3);
     double maxX = features.at(4);
@@ -306,7 +306,7 @@ int getObjectPointCloud(pcl::PointCloud<PointT> &fullcloud, map<int, int> &table
     int objIndex = 0;
     for (int y = minY; y <= maxY; y++) {
         for (int x = minX; x <= maxX; x++) {
-            index = y * X_RES + x; //x*Y_RES +y; //:q
+            index = y * X_RES + x - 1; //x*Y_RES +y; //:q
             
            // cout << "obj index " << objIndex << " index " << index << endl;
             //cloud.points.at(objIndex) = fullcloud.points.at(index);
@@ -325,16 +325,16 @@ int getObjectPointCloud(pcl::PointCloud<PointT> &fullcloud, map<int, int> &table
     cloud.points.resize(objIndices.indices.size());
     cout << "cloud size : " << cloud.points.size() << " indices : " << objIndices.indices.size() << "objindex : " << objIndex<< " tablepoints: " << localTablePoints.size() <<  endl; 
     if(cloud.points.size()>10){
-        filterCloud(cloud,localTablePoints, transformfile, objIndices);
+        filterCloud(cloud,localTablePoints, transformfile, objIndices, centroid);
     
         cout << "size after filtering:" << objIndices.indices.size() << endl;
         checkIndices(cloud,fullcloud,objIndices);
     }
     string filename;
     //sprintf(filename, "%s_obj_%d.pcd",aid, objID);
-    //filename = "pointclouds/"+fn;
-    //pcl::io::savePCDFileBinary(filename, cloud);
-    //std::cerr << "Saved " << cloud.points.size() << " data points to " << filename << std::endl;
+    filename = "pointclouds/"+fn;
+    pcl::io::savePCDFileBinary(filename, cloud);
+    std::cerr << "Saved " << cloud.points.size() << " data points to " << filename << std::endl;
     return 1;
 }
 
@@ -410,15 +410,15 @@ int main(int argc, char** argv) {
             int status = DATA->readNextFrame(data, pos_data, data_CONF, pos_data_CONF, IMAGE, objData);
 
 
-           // while(status < 209 ) {
-            //    status = DATA->readNextFrame(data, pos_data, data_CONF, pos_data_CONF, IMAGE, objData);
-            //}
-            
+           while(status <130 ) {
+               status = DATA->readNextFrame(data, pos_data, data_CONF, pos_data_CONF, IMAGE, objData);
+           }
+           pcl::PointXYZ centroid (0,0,0);
            while (status > 0) {
               
                 // create point cloud
                 pcl::PointCloud<PointT> cloud;
-                
+
                 map<int, int> tablePoints;
                 createPointCloud(IMAGE, transformfile, cloud, tablePoints);
                 // for each object find the object point cloud
@@ -430,7 +430,7 @@ int main(int argc, char** argv) {
                     fn << "_obj_";
                     fn << o; 
                     fn << ".pcd";
-                    int rval = getObjectPointCloud(cloud,tablePoints,transformfile,objData.at(o),cloudInds, fn.str());
+                    int rval = getObjectPointCloud(cloud,tablePoints,transformfile,objData.at(o),cloudInds, fn.str(), centroid);
                     // write the object point cloud indices.
                     std::ofstream ofile;
                     std::stringstream onum;
