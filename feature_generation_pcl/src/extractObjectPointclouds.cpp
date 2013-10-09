@@ -410,9 +410,9 @@ int main(int argc, char** argv) {
             int status = DATA->readNextFrame(data, pos_data, data_CONF, pos_data_CONF, IMAGE, objData);
 
 
-           while(status <130 ) {
-               status = DATA->readNextFrame(data, pos_data, data_CONF, pos_data_CONF, IMAGE, objData);
-           }
+           //while(status <130 ) {
+           //    status = DATA->readNextFrame(data, pos_data, data_CONF, pos_data_CONF, IMAGE, objData);
+          // }
            pcl::PointXYZ centroid (0,0,0);
            while (status > 0) {
               
