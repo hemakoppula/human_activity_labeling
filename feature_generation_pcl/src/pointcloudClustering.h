@@ -443,7 +443,7 @@ void filterForTable(pcl::PointCloud<PointOutT> &cloud, pcl::PointIndices &tableP
 
     for (int i = 0; i < cloud.size(); i++) {
        // cout << i << ":" << cloud.points[i].distance << ", z:"<< cloud.points[i].z  << endl;
-        if (cloud.points[i].distance < 2000 && cloud.points[i].distance > 550 && cloud.points[i].z < 100 && cloud.points[i].z > -100) {
+        if (cloud.points[i].distance < 2000 && cloud.points[i].distance > 550 && cloud.points[i].z < 500 && cloud.points[i].z > -500) {
             tablePoints.indices.push_back(i);
         }
 
@@ -476,7 +476,9 @@ void getTableInds(pcl::PointCloud<PointT> &cloud_in, pcl::PointIndices &cloudInd
     //std::vector<pcl::PointCloud<PointT> > clustersOutSorted;
     std::vector<pcl::PointIndices> clusterInds;
     int maxSize = 0;
-    int max_cluster_index = getClusters(cloud, clustersOut, clusterInds, true);
+    if (cloud.points.size()> 10){
+      int max_cluster_index = getClusters(cloud, clustersOut, clusterInds, true);
+    }
     pcl::PointIndices tmpInds;
     Eigen::Vector3d normal;
     for (size_t i = 0; i < clustersOut.size(); i++) {

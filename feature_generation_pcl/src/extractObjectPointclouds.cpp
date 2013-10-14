@@ -413,7 +413,11 @@ int main(int argc, char** argv) {
            //while(status <130 ) {
            //    status = DATA->readNextFrame(data, pos_data, data_CONF, pos_data_CONF, IMAGE, objData);
           // }
-           pcl::PointXYZ centroid (0,0,0);
+           pcl::PointXYZ centroidP (0,0,0);
+           vector<pcl::PointXYZ> centroids;
+           for(int o = 0; o < objData.size(); o++){
+             centroids.push_back(centroidP);
+           }
            while (status > 0) {
               
                 // create point cloud
@@ -430,7 +434,9 @@ int main(int argc, char** argv) {
                     fn << "_obj_";
                     fn << o; 
                     fn << ".pcd";
+                    pcl::PointXYZ centroid = centroids.at(o);
                     int rval = getObjectPointCloud(cloud,tablePoints,transformfile,objData.at(o),cloudInds, fn.str(), centroid);
+                    centroids.at(o) = centroid;
                     // write the object point cloud indices.
                     std::ofstream ofile;
                     std::stringstream onum;
