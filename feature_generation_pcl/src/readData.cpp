@@ -8,6 +8,13 @@
 #include <sstream>
 #include <map>
 #include <vector>
+
+#include <iostream>
+#include <boost/iostreams/filtering_streambuf.hpp>
+#include <boost/iostreams/filtering_stream.hpp>
+#include <boost/iostreams/copy.hpp>
+#include <boost/iostreams/filter/gzip.hpp>
+
 using namespace std;
 
 class readData {
@@ -33,6 +40,8 @@ private:
     vector<ifstream*> file_objFeat;
     vector<ifstream*> file_objPC;
     bool mirrored;
+    bool compressed;
+    boost::iostreams::filtering_istream in_RGBD;
 
 
     // print error message
@@ -317,9 +326,16 @@ private:
     // read RGBD data file
 
     void prepareRGBDData() {
-        fileName_RGBD = dataLocation + fileName + "_rgbd.txt";
-        //printf("\tOpening \"%s\" (%s)\n", (char*) fileName_RGBD.c_str(), (char*) curActivity.c_str());
-        file_RGBD = new ifstream((char*) fileName_RGBD.c_str(), ifstream::in);
+    	if (compressed){
+            fileName_RGBD = dataLocation + fileName + "_rgbd.txt.gz";
+            //printf("\tOpening \"%s\" (%s)\n", (char*) fileName_RGBD.c_str(), (char*) curActivity.c_str());
+            file_RGBD = new ifstream( fileName_RGBD.c_str(), ios_base::in | ios_base::binary);
+		    in_RGBD.push(boost::iostreams::gzip_decompressor());
+		    in_RGBD.push(*file_RGBD);
+    	}else{
+    		fileName_RGBD = dataLocation + fileName + "_rgbd.txt";
+    		file_RGBD = new ifstream((char*) fileName_RGBD.c_str(), ifstream::in);
+    	}
         currentFrameNum = -99;
     }
 
@@ -330,13 +346,16 @@ private:
 
     // return true if data retrieving was successful
 
-    bool readNextLine_RGBD(int ***IMAGE) {
+
+
+    bool readNextLine_RGBD_c(int ***IMAGE) {
         string line;
         char* line_c;
         bool file_ended = true;
         
         if (skipOdd) {
-            if (getline(*file_RGBD, line)) {
+
+            if (getline(in_RGBD, line)) {
                 file_ended = false;
 
                 line_c = (char*) line.c_str();
@@ -348,7 +367,7 @@ private:
             }
         }
 
-        if (getline(*file_RGBD, line)) {
+        if (getline(in_RGBD, line)) {
             file_ended = false;
 
             line_c = (char*) line.c_str();
@@ -396,6 +415,96 @@ private:
         return !file_ended;
     }
 
+    bool readNextLine_RGBD(int ***IMAGE) {
+           string line;
+           char* line_c;
+           bool file_ended = true;
+
+           if (skipOdd) {
+               if (getline(*file_RGBD, line)) {
+                   file_ended = false;
+
+                   line_c = (char*) line.c_str();
+                   char* element = strtok(line_c, ",");
+                   if (element == NULL || strcmp(element, "END") == 0) {
+                       file_ended = true;
+                       return false;
+                   }
+               }
+           }
+
+           if (getline(*file_RGBD, line)) {
+               file_ended = false;
+
+               line_c = (char*) line.c_str();
+               char* element = strtok(line_c, ",");
+               if (element == NULL || strcmp(element, "END") == 0) {
+                   file_ended = true;
+                   return false;
+               }
+               currentFrameNum_RGBD = atoi(element);
+               if (currentFrameNum != currentFrameNum_RGBD) {
+                   printf("skeleton: %d rgbd: %d\n", currentFrameNum, currentFrameNum_RGBD);
+                   errorMsg("FRAME NUMBER BETWEEN SKELETON AND RGBD DOES NOT MATCH!!!!!!!!! (READING RGBD)");
+               }
+               for (int y = 0; y < Y_RES; y++) {
+                   for (int x = 0; x < X_RES; x++) {
+                       for (int d = 0; d < RGBD_data; d++) {
+
+                           element = strtok(NULL, ","); // passing NULL keeps tokenizing previous call
+                           if (element == NULL) {
+                               file_ended = true;
+                               return false;
+                           }
+                           int e = atoi(element);
+
+                           if (!mirrored) {
+                               IMAGE[x][y][d] = e;
+                           } else {
+                               IMAGE[x][(Y_RES - 1) - y][d] = e;
+                           }
+                       }
+
+                   }
+               }
+               //printf( "x: %d y: %d" ,x,y);
+               // check if there is more data in current frame..
+               element = strtok(NULL, ",");
+               if (element != NULL) {
+                   printf("line_c = %s\n", line_c);
+                   errorMsg("more data exist in RGBD data ..\n");
+
+               }
+
+           }
+
+           return !file_ended;
+       }
+
+
+    bool skipNextLine_RGBD_c() {
+        string line;
+        char* line_c;
+        bool file_ended = true;
+
+
+        if (getline(in_RGBD, line)) {
+            file_ended = false;
+
+            line_c = (char*) line.c_str();
+            char* element = strtok(line_c, ",");
+            if (element == NULL || strcmp(element, "END") == 0) {
+                file_ended = true;
+                return false;
+            }
+            currentFrameNum_RGBD = atoi(element);
+        }
+
+
+        return !file_ended;
+    }
+
+
     bool skipNextLine_RGBD() {
         string line;
         char* line_c;
@@ -434,7 +543,12 @@ public:
             return false;
         }
         bool status_obj = readNextLine_ObjectData(objFeats);
-        bool status_RGBD = readNextLine_RGBD(IMAGE);
+        bool status_RGBD = false;
+        if(compressed){
+        	status_RGBD = readNextLine_RGBD_c(IMAGE);
+        }else{
+        	status_RGBD = readNextLine_RGBD(IMAGE);
+        }
         if (status_RGBD) {
             lastFrame = currentFrameNum;
         } else {
@@ -457,7 +571,12 @@ public:
         }
         bool status_obj = readNextLine_ObjectData(objFeats);
         bool status_objPC = readNextLine_ObjectPCData(objPCInds); 
-        bool status_RGBD = readNextLine_RGBD(IMAGE);
+        bool status_RGBD = false;
+        if(compressed){
+        	status_RGBD = readNextLine_RGBD_c(IMAGE);
+        }else{
+        	status_RGBD = readNextLine_RGBD(IMAGE);
+        }
         if (status_RGBD) {
             lastFrame = currentFrameNum;
         } else {
@@ -482,30 +601,41 @@ public:
         this->mirrored = mirrored;
         skipOdd = skip;
         this->objectFeatureFileList = objectFeatureFiles;
+        this->compressed = false;
         prepareSkeletonData();
         prepareRGBDData();
         prepareObjectData();
 
-    }
-    readData(string dataLoc, string fileN, map<string, string> d_a_map, int i, bool mirrored, string dataLoc_mirrored, bool skip, vector<string> objectFeatureFiles, vector<string> objectPCFiles) {
-        if (!mirrored) {
-            printf("%d. ", i);
-        } else {
-            printf("%d(M). ", i);
-        }
-        dataLocation = dataLoc;
-        dataLocation_mirrored = dataLoc_mirrored;
-        fileName = fileN;
-        data_act_map = d_a_map;
-        this->mirrored = mirrored;
-        skipOdd = skip;
-        this->objectFeatureFileList = objectFeatureFiles;
-        this->objectPCFileList = objectPCFiles;
-        prepareSkeletonData();
-        prepareRGBDData();
-        prepareObjectData();
 
     }
+
+
+
+
+    readData(string dataLoc, string fileN, map<string, string> d_a_map, int i, bool mirrored, string dataLoc_mirrored, bool skip, vector<string> objectFeatureFiles, vector<string> objectPCFiles, bool compressed = false )
+     {
+         if (!mirrored) {
+             printf("%d. ", i);
+         } else {
+             printf("%d(M). ", i);
+         }
+         dataLocation = dataLoc;
+         dataLocation_mirrored = dataLoc_mirrored;
+         fileName = fileN;
+         data_act_map = d_a_map;
+         this->mirrored = mirrored;
+         skipOdd = skip;
+         this->objectFeatureFileList = objectFeatureFiles;
+         this->objectPCFileList = objectPCFiles;
+         this->compressed = compressed;
+         prepareSkeletonData();
+         prepareRGBDData();
+         prepareObjectData();
+
+
+     }
+
+
 
     readData(string dataLoc, string fileN, bool skip, vector<string> objectFeatureFiles) {
         dataLocation = dataLoc;
@@ -514,6 +644,7 @@ public:
 
         skipOdd = skip;
         this->objectFeatureFileList = objectFeatureFiles;
+        this->compressed = false;
         prepareSkeletonData();
         prepareRGBDData();
         prepareObjectData();
@@ -525,6 +656,7 @@ public:
         fileName = fileN;
         skipOdd = false;
         this->mirrored = false; //this was previously unitialized
+        this->compressed = false;
         prepareSkeletonData();
         prepareRGBDData();
     }
@@ -538,8 +670,12 @@ public:
             printf("\t\ttotal number of frames = %d\n", lastFrame);
             return false;
         }
-
-        bool status_RGBD = readNextLine_RGBD(IMAGE);
+        bool status_RGBD = false;
+        if(compressed){
+        	status_RGBD = readNextLine_RGBD_c(IMAGE);
+        }else{
+        	status_RGBD = readNextLine_RGBD(IMAGE);
+        }
         if (status_RGBD) {
             lastFrame = currentFrameNum;
         } else {
@@ -577,8 +713,12 @@ public:
             printf("\t\ttotal number of frames = %d\n", lastFrame);
             return false;
         }
-
-        bool status_RGBD = skipNextLine_RGBD();
+        bool status_RGBD = false;
+        if (compressed){
+        	status_RGBD = skipNextLine_RGBD_c();
+        }else {
+        	status_RGBD = skipNextLine_RGBD();
+        }
         if (status_RGBD) {
             lastFrame = currentFrameNum;
         } else {
