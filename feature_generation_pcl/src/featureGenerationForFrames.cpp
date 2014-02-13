@@ -71,8 +71,8 @@ void parseChk(bool chk) {
 }
 
 void readSegmentsFile() {
-    //const string labelfile = dataLocation + "Segmentation.txt";
-    const string labelfile =  "Segmentation_sampled.txt";
+    const string labelfile = dataLocation + "Segmentation.txt";
+    //const string labelfile =  "Segmentation_sampled.txt";
 
     ifstream file((char*) labelfile.c_str(), ifstream::in);
 
@@ -282,7 +282,13 @@ int main(int argc, char** argv) {
     string actfile =  (string)argv[2];
     string mirrored_dataLocation = "";
 //    string outputFile = "data_extracted/features.txt"; //+ (string)argv[1] + ".txt";
-
+    bool compressed = false;
+    if (argc >= 3){
+    	string c = (string)argv[3];
+    	if (c.compare("compressed")==0){
+    		compressed = true;
+    	}
+    }
     readDataActMap(actfile);
     //readLabelFile();
     readSegmentsFile();
@@ -352,7 +358,7 @@ int main(int argc, char** argv) {
             bool mirrored = (j == 0) ? false : true;
             bool skipOdd = false;
             const string transformfile = dataLocation + all_files[i] + "_globalTransform.txt";
-            readData* DATA = new readData(dataLocation, all_files[i], data_act_map, i + 1, mirrored, mirrored_dataLocation, skipOdd, fileList, objPCFileList);
+            readData* DATA = new readData(dataLocation, all_files[i], data_act_map, i + 1, mirrored, mirrored_dataLocation, skipOdd, fileList, objPCFileList, compressed);
             int status = DATA->readNextFrame(data, pos_data, data_CONF, pos_data_CONF, IMAGE, objData, objPCInds);
             FrameFeatures ff(true);
             list<Frame> frames;
