@@ -15,7 +15,7 @@ Copyright (C) 2012 Hema Koppula
 #include <vector>
 
 #include "./frame_skel.h"
-#include "includes/color.cpp"
+#include "includes/color.h"
 #include "includes/point_types.h"
 #include "includes/CombineUtils.h"
 #include "HOG.cpp"
@@ -99,9 +99,9 @@ class ObjectProfile {
 
   float getAngleWithVerticalInRadians();
 
-  float getHorzDistanceBwCentroids(ObjectProfile & other);
+  float getHorzDistanceBwCentroids(const ObjectProfile & other);
 
-  float getDistanceSqrBwCentroids(ObjectProfile & other);
+  float getDistanceSqrBwCentroids(const ObjectProfile & other);
 
   float getDistanceSqrBwCenters(const ObjectProfile & other);
 

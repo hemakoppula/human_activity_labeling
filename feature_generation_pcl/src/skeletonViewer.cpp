@@ -1,7 +1,7 @@
 
 
 #include "constants.h"
-#include "includes/color.cpp"
+#include "includes/color.h"
 
 
 #include "includes/point_types.h"

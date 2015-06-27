@@ -2,7 +2,7 @@
 
 #include <stdint.h>
 
-#include "includes/color.cpp"
+#include "includes/color.h"
 #include "pcl/ModelCoefficients.h"
 #include "pcl/kdtree/kdtree.h"
 #include "pcl/search/impl/organized.hpp"
@@ -34,7 +34,7 @@ typedef pcl::PointXYZRGBCamSL PointOutT;
 typedef pcl::search::KdTree<PointOutT> KdTree;
 typedef pcl::search::KdTree<PointOutT>::Ptr KdTreePtr;
 
-/* 
+/*
 Extract the clusters based on location and normals
  */
 void extractEuclideanClusters(
@@ -123,8 +123,8 @@ void extractEuclideanClusters(
     }
 }
 
-/* 
-Extract the clusters based on location 
+/*
+Extract the clusters based on location
  */
 void extractEuclideanClusters(
         const pcl::PointCloud<PointOutT> &cloud,
@@ -207,7 +207,7 @@ void convert(const pcl::PointCloud<PointT> &cloud_in, pcl::PointCloud<PointOutT>
     //  clusters[i].header.stamp = ros::Time(0);
     cloud_out.points.resize(cloud_in.points.size());
     for (size_t j = 0; j < cloud_in.points.size(); j++) {
-        
+
         cloud_out.points[j].x = cloud_in.points[j].x;
         cloud_out.points[j].y = cloud_in.points[j].y;
         cloud_out.points[j].z = cloud_in.points[j].z;
@@ -253,8 +253,8 @@ int getClusters(pcl::PointCloud<PointOutT> &cloud, std::vector<pcl::PointCloud<P
     int min_pts_per_cluster = 0;
     int max_pts_per_cluster = 3000000;
     int number_neighbours = 50;
-    float radius = 0.05;//0.025; // 0.01*10 ;//0.025*1000;//0.01*1000;// 0.025 
-    float angle = 0.52; //0.52; 
+    float radius = 0.05;//0.025; // 0.01*10 ;//0.025*1000;//0.01*1000;// 0.025
+    float angle = 0.52; //0.52;
 
 
 
@@ -354,22 +354,22 @@ void getMaxConsistentCluster(pcl::PointCloud<PointT> &cloud_in, pcl::PointIndice
         c.y += clustersOut.at(i).points.at(p).y;
         c.z += clustersOut.at(i).points.at(p).z;
       }
-      c.x = c.x/clustersOut.at(i).points.size(); 
-      c.y = c.y/clustersOut.at(i).points.size(); 
-      c.z = c.z/clustersOut.at(i).points.size(); 
+      c.x = c.x/clustersOut.at(i).points.size();
+      c.y = c.y/clustersOut.at(i).points.size();
+      c.z = c.z/clustersOut.at(i).points.size();
       centers.push_back(c);
       double distance =  pow(c.x- centroid.x, 2 )+ pow (c.y- centroid.y, 2 ) +  pow (c.z- centroid.z, 2 );
       if(distance < mindistance) { mindistanceindex = i; mindistance = distance;}
     }
     if (! (centroid.x == 0 && centroid.y ==0 && centroid.z ==0)) {
-       max_cluster_index = mindistanceindex; 
+       max_cluster_index = mindistanceindex;
        cout << "index changed" << endl;
     }
     cout << "min distance index = " << mindistanceindex << endl;
     cout << "selected index = " << max_cluster_index << endl;
     cloud_in = clustersOut.at(max_cluster_index);
     indices = clusterInds.at(max_cluster_index);
-    centroid = centers.at(max_cluster_index); 
+    centroid = centers.at(max_cluster_index);
     cout << "centroid: " << centroid.x << "," << centroid.y << "," << centroid.z << endl;
 
 }
@@ -469,7 +469,7 @@ void getTableInds(pcl::PointCloud<PointT> &cloud_in, pcl::PointIndices &cloudInd
     pcl::PointCloud<PointOutT> cloud;
     convert(cloud_in, cloud);
     // full cloud segmentation take a lot of time
-    // filter out points too far and not near table 
+    // filter out points too far and not near table
     pcl::PointIndices tablePoints;
     filterForTable(cloud, tablePoints);
     std::vector<pcl::PointCloud<PointT> > clustersOut;

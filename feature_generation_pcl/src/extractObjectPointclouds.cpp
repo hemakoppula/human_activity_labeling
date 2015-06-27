@@ -1,4 +1,4 @@
-/* 
+/*
  * File:   featureGeneration.cpp
  * Author: hema
  *
@@ -37,7 +37,7 @@ typedef pcl::PointXYZRGB PointT;
 //#include "featuresRGBD_skel.cpp"
 //#include "features_singleFrame.cpp"
 //#include "frame.cpp"
-#include "includes/color.cpp"
+#include "includes/color.h"
 //#include "pointcloudClustering.h"
 #include "frame.cpp"
 
@@ -177,7 +177,7 @@ void readDataActMapOld() {
 void saveTablePC( pcl::PointCloud<PointT> &cloud, pcl::PointIndices &tablePointInds  ){
   if(tablePointInds.indices.size() > 1){
   pcl::PointCloud<PointT> table;
-  table.height = 1; 
+  table.height = 1;
   table.width = tablePointInds.indices.size();
   table.points.resize(table.height * table.width);
   for(int i = 0; i < tablePointInds.indices.size(); i ++){
@@ -208,8 +208,8 @@ void createPointCloud(int ***IMAGE, string transformfile, pcl::PointCloud<PointT
             index++;
         }
     }
-    
-    
+
+
     TransformG globalTransform;
     globalTransform = readTranform(transformfile);
     globalTransform.transformPointCloudInPlaceAndSetOrigin(cloud);
@@ -236,15 +236,15 @@ void filterCloud(pcl::PointCloud<PointT> &cloud, map<int, int> &tablePoints, str
     globalTransform = readTranform(transformfile);
     globalTransform.transformPointInPlace(origin);
     vector<int> indices;
-    cout << "cloud size: " << cloud.points.size() << " indicies:" << objIndices.indices.size() << endl; 
+    cout << "cloud size: " << cloud.points.size() << " indicies:" << objIndices.indices.size() << endl;
     pcl::PointIndices localIndices, clusterIndices;
     for (int i = 0; i < cloud.points.size(); i++) {
         double dist_from_cam = sqrt(sqr(origin.x - cloud.points[i].x) +
                 sqr(origin.y - cloud.points[i].y) +
                 sqr(origin.z - cloud.points[i].z));
-        
+
         if (dist_from_cam < 3500 && dist_from_cam > 0 )
-        { 
+        {
           if( tablePoints.find(i) == tablePoints.end()) {
             indices.push_back(i);
           }
@@ -259,13 +259,13 @@ void filterCloud(pcl::PointCloud<PointT> &cloud, map<int, int> &tablePoints, str
         if (i != indices[i])
             cloud.points[i] = temp_cloud.points[indices[i]];
         localIndices.indices.push_back(objIndices.indices.at(indices[i]));
-        
+
     }
 
-    
+
     // cluster and then retain the biggest cluster
     getMaxConsistentCluster(cloud, clusterIndices, centroid);
-    /// 
+    ///
     objIndices.indices.clear();
     for(size_t i = 0 ; i < clusterIndices.indices.size(); i ++){
         objIndices.indices.push_back(localIndices.indices.at(clusterIndices.indices.at(i)));
@@ -276,7 +276,7 @@ void filterCloud(pcl::PointCloud<PointT> &cloud, map<int, int> &tablePoints, str
 }
 
 void checkIndices(pcl::PointCloud<PointT> & cloud, pcl::PointCloud<PointT> & fullcloud, pcl::PointIndices indices){
-    
+
     for(size_t i = 0 ; i < indices.indices.size(); i ++)
     {
         assert(fullcloud.points.at(indices.indices.at(i)).x == cloud.points.at(i).x);
@@ -292,22 +292,22 @@ int getObjectPointCloud(pcl::PointCloud<PointT> &fullcloud, map<int, int> &table
     double maxX = features.at(4);
     double maxY = features.at(5);
     if(maxY>480 || maxX>640){return -1;}
-    
+
     pcl::PointCloud<PointT> cloud;
-    
+
     int index = 0;
     cloud.height = 1;
     cloud.width = (maxY - minY + 1)*(maxX - minX + 1);
     cloud.points.resize(cloud.height * cloud.width);
     cout << "width" << cloud.width << endl;
      map<int, int> localTablePoints;
- // cout << "full cloud size : " << fullcloud.points.size() << " indices : " << objIndices.indices.size() <<   endl; 
-  
+ // cout << "full cloud size : " << fullcloud.points.size() << " indices : " << objIndices.indices.size() <<   endl;
+
     int objIndex = 0;
     for (int y = minY; y <= maxY; y++) {
         for (int x = minX; x <= maxX; x++) {
             index = y * X_RES + x - 1; //x*Y_RES +y; //:q
-            
+
            // cout << "obj index " << objIndex << " index " << index << endl;
             //cloud.points.at(objIndex) = fullcloud.points.at(index);
             //objIndices.indices.push_back(index);
@@ -323,10 +323,10 @@ int getObjectPointCloud(pcl::PointCloud<PointT> &fullcloud, map<int, int> &table
     }
      cloud.width = objIndices.indices.size();
     cloud.points.resize(objIndices.indices.size());
-    cout << "cloud size : " << cloud.points.size() << " indices : " << objIndices.indices.size() << "objindex : " << objIndex<< " tablepoints: " << localTablePoints.size() <<  endl; 
+    cout << "cloud size : " << cloud.points.size() << " indices : " << objIndices.indices.size() << "objindex : " << objIndex<< " tablepoints: " << localTablePoints.size() <<  endl;
     if(cloud.points.size()>10){
         filterCloud(cloud,localTablePoints, transformfile, objIndices, centroid);
-    
+
         cout << "size after filtering:" << objIndices.indices.size() << endl;
         checkIndices(cloud,fullcloud,objIndices);
     }
@@ -339,7 +339,7 @@ int getObjectPointCloud(pcl::PointCloud<PointT> &fullcloud, map<int, int> &table
 }
 
 /*
- * 
+ *
  */
 int main(int argc, char** argv) {
 
@@ -359,7 +359,7 @@ int main(int argc, char** argv) {
     printf("Number of Files to be processed = %d\n", all_files.size());
 
 
-  
+
     double **data; //[JOINT_NUM][JOINT_DATA_NUM];
     int **data_CONF; //[JOINT_NUM][JOINT_DATA_TYPE_NUM]
     double **pos_data; //[POS_JOINT_NUM][POS_JOINT_DATA_NUM];
@@ -396,8 +396,8 @@ int main(int argc, char** argv) {
         for (size_t j = 0; j < data_obj_map[all_files.at(i)].size(); j++) {
             fileList.at(j) = dataLocation + "/" + all_files.at(i) + "_obj" + data_obj_map[all_files.at(i)].at(j) + ".txt";
         }
-         
-        
+
+
         const string transformfile = dataLocation + all_files[i] + "_globalTransform.txt";
 
         // for both mirrored and non mirrored data make j<2 ; for now use only mirrored
@@ -419,7 +419,7 @@ int main(int argc, char** argv) {
              centroids.push_back(centroidP);
            }
            while (status > 0) {
-              
+
                 // create point cloud
                 pcl::PointCloud<PointT> cloud;
 
@@ -428,11 +428,11 @@ int main(int argc, char** argv) {
                 // for each object find the object point cloud
                 for (size_t o = 0; o < objData.size(); o++) {
                     pcl::PointIndices cloudInds;
-                    stringstream fn; 
+                    stringstream fn;
                     fn << all_files[i] + "_frame_";
                     fn << status;
                     fn << "_obj_";
-                    fn << o; 
+                    fn << o;
                     fn << ".pcd";
                     pcl::PointXYZ centroid = centroids.at(o);
                     int rval = getObjectPointCloud(cloud,tablePoints,transformfile,objData.at(o),cloudInds, fn.str(), centroid);
@@ -444,7 +444,7 @@ int main(int argc, char** argv) {
                     if(rval == -1){
                         cout << "ERROR IN BOUNDING BOX action: " << all_files[i] << " obj :" << onum.str() << " fnum: " << status << endl;
                     }
-                    
+
                     string fname = dataLocation + "/objects/" + all_files.at(i) + "_obj" +  onum.str() + ".txt";
                     ofile.open(fname.c_str(), std::fstream::app);
                     ofile << all_files[i] << "," << status << "," << onum.str() << "," ;
@@ -459,11 +459,10 @@ int main(int argc, char** argv) {
                 count++;
             }
         }
-       
+
     }
 
     printf("ALL DONE.\n\n");
 
     return 0;
 }
-
