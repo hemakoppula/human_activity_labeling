@@ -19,7 +19,7 @@ public:
         bool mirrored = false;
         features_skeleton = new FeaturesSkel(mirrored);
     }
-    
+
     Segment() {
         bool mirrored = false;
         segmentId = 0;
@@ -45,7 +45,7 @@ public:
         features_skeleton->reset(false);
     }
 
-    vector<double> computeSkelObjFeatures(const Frame_skel & skel, const ObjectProfile & obj) {
+    vector<double> computeSkelObjFeatures(const FrameSkel & skel, const ObjectProfile & obj) {
         vector<double> features;
 
 
@@ -62,7 +62,7 @@ public:
     vector<double> computeObjObjFeatures(ObjectProfile & obj1,  ObjectProfile & obj2) {
 
         vector <double> features;
-        // 
+        //
         features.push_back(obj1.centroid.x - obj2.centroid.x);
         features.push_back(obj1.centroid.y - obj2.centroid.y);
         features.push_back(obj1.centroid.z - obj2.centroid.z);
@@ -79,7 +79,7 @@ public:
                     features.push_back(vector<double> (0));
                     features.at(features.size() - 1) = computeObjObjFeatures(frame.objects.at(i), frame.objects.at(j));
                     // oofeatfile << frameNew->sequenceId << "," << frameNew->frameNum << "," << frameNew->objects.at(i).objID << "," << frameNew->objects.at(j).objID  ;
-                    // print_feats(obj_obj_features.at(obj_obj_features.size()-1),oofeatfile); 
+                    // print_feats(obj_obj_features.at(obj_obj_features.size()-1),oofeatfile);
                 }
             }
 
@@ -95,7 +95,7 @@ public:
             features.push_back(vector<double> (0));
             features.at(features.size() - 1) = computeSkelObjFeatures(frame.skeleton, frame.objects.at(i));
             //sofeatfile << frameNew->sequenceId << "," << frameNew->frameNum << "," << frameNew->objects.at(i).objID;
-            //print_feats(skel_obj_features.at(skel_obj_features.size()-1),sofeatfile); 
+            //print_feats(skel_obj_features.at(skel_obj_features.size()-1),sofeatfile);
         }
         //  cout << "Skelton - Object Features:" << endl;
 
@@ -103,7 +103,7 @@ public:
     }
 
     void computeFrameObjFeatures(Frame &frame) {
-        // centroid features 
+        // centroid features
         for (size_t i = 0; i < frame.objects.size(); i++) {
             //obj_features.push_back(vector<double>(0));
             obj_features.at(i) = frame.objects.at(i).features;
@@ -112,7 +112,7 @@ public:
             obj_features.at(i).push_back(frame.objects.at(i).getCentroid().y);
             obj_features.at(i).push_back(frame.objects.at(i).getCentroid().z);
             // ofeatfile << frameNew->sequenceId << "," << frameNew->frameNum << "," << frameNew->objects.at(i).objID;
-            //print_feats(obj_features.at(i),ofeatfile); 
+            //print_feats(obj_features.at(i),ofeatfile);
             //cout << "centroid x:" << objects.at(i).getCentroid().x << " y:" << objects.at(i).getCentroid().y << " z:" << objects.at(i).getCentroid().z << endl;
         }
         //   print_feats(obj_features);
@@ -132,7 +132,7 @@ public:
         computeSkelFeatures(normalize);
         computeObjPairFeatures(normalize);
     }
-    
+
     void computeObjFeatures(bool normalize) {
         int numFrames = frames.size();
         Frame ff = frames.at(0);
@@ -191,14 +191,14 @@ public:
         bool added = false;
         Frame frame = frames.at(floor(frames.size() / 2));
         int numFeats=0;
-        
-        
+
+
         /*
          * for calculating features at more than one frame
          * for (size_t i = 0; i <frames.size()/2; i ++){
             features_skeleton->addData(frames.at(i).skeleton->data, frames.at(i).skeleton->pos_data);
         }*/
-       
+
         started = features_skeleton->extractSkeletonFeature(frame.skeleton.data, frame.skeleton.pos_data);
         if (started) {
             skel_features = features_skeleton->getFeatureValues();
@@ -214,8 +214,8 @@ public:
         }
          */
         // distance and displacement
-        Frame_skel sf = frames.at(0).skeleton;
-        Frame_skel sl = frames.at(frames.size() - 1).skeleton;
+        FrameSkel sf = frames.at(0).skeleton;
+        FrameSkel sl = frames.at(frames.size() - 1).skeleton;
         double dist;
         for (size_t i = 0; i < sf.transformed_joints.size(); i++) {
             double x = sf.transformed_joints.at(i).x - sl.transformed_joints.at(i).x;
@@ -243,21 +243,21 @@ public:
         skel_features.insert(skel_features.begin(),frame.rgbdskel_feats.begin(),frame.rgbdskel_feats.end());
         */
     }
-    
+
     void computeSkelAdditiveFeatures(bool normalize) {
         int numFrames = frames.size();
         bool started = false;
         bool added = false;
         Frame frame = frames.at(floor(frames.size() / 2));
         int numFeats=0;
-        
-        
+
+
         /*
          * for calculating features at more than one frame
          * for (size_t i = 0; i <frames.size()/2; i ++){
             features_skeleton->addData(frames.at(i).skeleton->data, frames.at(i).skeleton->pos_data);
         }*/
-       
+
         started = features_skeleton->extractSkeletonFeature(frame.skeleton.data, frame.skeleton.pos_data);
         if (started) {
             skel_features = features_skeleton->getFeatureValues();
@@ -273,8 +273,8 @@ public:
         }
          */
         // distance and displacement
-        Frame_skel sf = frames.at(0).skeleton;
-        Frame_skel sl = frames.at(frames.size() - 1).skeleton;
+        FrameSkel sf = frames.at(0).skeleton;
+        FrameSkel sl = frames.at(frames.size() - 1).skeleton;
         double dist;
         for (size_t i = 0; i < sf.transformed_joints.size(); i++) {
             double x = sf.transformed_joints.at(i).x - sl.transformed_joints.at(i).x;
@@ -326,7 +326,7 @@ public:
                         if (k == 0 || k == frames.size() - 1 || k == floor((frames.size() - 1) / 2)) {
                             //a.insert(a.end(), b.begin(), b.end());
                             obj_obj_features.at(objPairCount).insert(obj_obj_features.at(objPairCount).end(),features.at(k).at(objPairCount).begin(),features.at(k).at(objPairCount).end());
-                            
+
                             //obj_obj_features.at(objPairCount).push_back(features.at(k).at(objPairCount));
                         }
                         // compute the min and max of distances and displacements
@@ -346,7 +346,7 @@ public:
                         }
                     }
                     // oofeatfile << frameNew->sequenceId << "," << frameNew->frameNum << "," << frameNew->objects.at(i).objID << "," << frameNew->objects.at(j).objID  ;
-                    // print_feats(obj_obj_features.at(obj_obj_features.size()-1),oofeatfile); 
+                    // print_feats(obj_obj_features.at(obj_obj_features.size()-1),oofeatfile);
                     obj_obj_features.at(objPairCount).insert(obj_obj_features.at(objPairCount).end(),min.begin(),min.end());
                     obj_obj_features.at(objPairCount).insert(obj_obj_features.at(objPairCount).end(),max.begin(),max.end());
                     objPairCount++;
@@ -373,8 +373,8 @@ public:
         for (size_t i = 0; i < numObjs; i++) {
             skel_obj_features.push_back(vector<double> (0));
             vector<double> min(features.at(0).at(objCount).size(), FLT_MAX), max(features.at(0).at(objCount).size(), FLT_MIN);
-           
-                    
+
+
             for (size_t k = 0; k < frames.size(); k++) {
                 // store the features of the first , middle and last frames
                 if (k == 0 || k == frames.size() - 1 || k == floor((frames.size() - 1) / 2)) {
@@ -396,12 +396,12 @@ public:
                     max.at(z) = max.at(z) / numFrames;
                 }
             }
-            
+
             skel_obj_features.at(objCount).insert(skel_obj_features.at(objCount).end(), min.begin(), min.end());
             skel_obj_features.at(objCount).insert(skel_obj_features.at(objCount).end(), max.begin(), max.end());
             objCount++;
             //sofeatfile << frameNew->sequenceId << "," << frameNew->frameNum << "," << frameNew->objects.at(i).objID;
-            //print_feats(skel_obj_features.at(skel_obj_features.size()-1),sofeatfile); 
+            //print_feats(skel_obj_features.at(skel_obj_features.size()-1),sofeatfile);
         }
         //  cout << "Skelton - Object Features:" << endl;
 
@@ -415,7 +415,7 @@ class FeaturesMultiFrame {
 private:
     Segment segmentNew;
     Segment segmentOld;
-    
+
 
     vector<double> skel_temporal_features;
     vector<vector<double> > obj_temporal_features;
@@ -455,7 +455,7 @@ private:
     }
 
     void computeObjTemporalFeatures(bool normalize ) {
-         
+
         Frame frameNew = segmentNew.frames.at(floor((segmentNew.frames.size()-1)/2));
         Frame frameOld = segmentOld.frames.at(floor((segmentOld.frames.size()-1)/2));
         int numFrame = frameNew.frameNum - frameOld.frameNum;
@@ -469,16 +469,16 @@ private:
                 obj_temporal_features.at(i).push_back((frameNew.objects.at(i).getDistanceSqrBwCentroids(frameOld.objects.at(i)))/numFrame);
                 obj_temporal_features.at(i).push_back((frameNew.objects.at(i).getVertDispCentroids(frameOld.objects.at(i)))/numFrame);
             }
-            //TODO : add transformation as a feature 
-            
+            //TODO : add transformation as a feature
+
             temporalObjfeatfile << frameNew.sequenceId << "," << segmentOld.segmentId << "," << segmentNew.segmentId << "," << frameNew.objects.at(i).objID;
             print_feats(obj_temporal_features.at(i), temporalObjfeatfile);
             //cout << "centroid x:" << objects.at(i).getCentroid().x << " y:" << objects.at(i).getCentroid().y << " z:" << objects.at(i).getCentroid().z << endl;
         }
         //print_feats(obj_temporal_features);
     }
-    
-    
+
+
     void computeObjTemporalFeaturesAdj(bool normalize ) {
         Frame frameNew = segmentNew.frames.at(0);
         Frame frameOld = segmentOld.frames.at(segmentOld.frames.size()-1);
@@ -493,15 +493,15 @@ private:
                 obj_temporal_features.at(i).push_back((frameNew.objects.at(i).getDistanceSqrBwCentroids(frameOld.objects.at(i)))/numFrame);
                 obj_temporal_features.at(i).push_back((frameNew.objects.at(i).getVertDispCentroids(frameOld.objects.at(i)))/numFrame);
             }
-            //TODO : add transformation as a feature 
-            
+            //TODO : add transformation as a feature
+
             temporalObjfeatfile << frameNew.sequenceId << "," << segmentOld.segmentId << "," << segmentNew.segmentId << "," << frameNew.objects.at(i).objID;
             print_feats(obj_temporal_features.at(i), temporalObjfeatfile);
             //cout << "centroid x:" << objects.at(i).getCentroid().x << " y:" << objects.at(i).getCentroid().y << " z:" << objects.at(i).getCentroid().z << endl;
         }
         //print_feats(obj_temporal_features);
     }
-    
+
 
     void computeSkelTemporalFeatures(bool normalize) {
         Frame frameNew = segmentNew.frames.at(floor((segmentNew.frames.size()-1)/2));
@@ -516,7 +516,7 @@ private:
         temporalSkelfeatfile << frameNew.sequenceId << "," << segmentOld.segmentId << "," << segmentNew.segmentId;
         print_feats(skel_temporal_features, temporalSkelfeatfile);
     }
-    
+
    void computeSkelTemporalFeaturesAdj(bool normalize) {
         Frame frameNew = segmentNew.frames.at(0);
         Frame frameOld = segmentOld.frames.at(segmentOld.frames.size()-1);
@@ -535,45 +535,45 @@ public:
 
     void writeObjObjFeats(){
         int numObjs = segmentNew.frames.at(0).objects.size();
-        int objPairCount = 0; 
+        int objPairCount = 0;
         for(size_t i = 0; i < numObjs; i++){
             for (size_t j = 0; j < numObjs; j++){
                 if(i!=j){
                     oofeatfile << segmentNew.frames.at(0).sequenceId << "," << segmentNew.segmentId << "," << segmentNew.frames.at(0).objects.at(i).objID << "," << segmentNew.frames.at(0).objects.at(j).objID  ;
-                    print_feats(segmentNew.obj_obj_features.at(objPairCount),oofeatfile); 
+                    print_feats(segmentNew.obj_obj_features.at(objPairCount),oofeatfile);
                     objPairCount++;
                 }
             }
-            
+
         }
     }
     void writeSkelObjFeats() {
         int numObjs = segmentNew.frames.at(0).objects.size();
-       
+
         for(size_t i = 0; i < numObjs; i++){
         sofeatfile <<  segmentNew.frames.at(0).sequenceId << "," << segmentNew.segmentId << "," << segmentNew.frames.at(0).objects.at(i).objID;
-            print_feats(segmentNew.skel_obj_features.at(i),sofeatfile); 
+            print_feats(segmentNew.skel_obj_features.at(i),sofeatfile);
         }
     }
     void writeSkelFeats(){
-        
+
         sfeatfile << segmentNew.frames.at(0).sequenceId << "," << segmentNew.segmentId ;
         print_feats(segmentNew.skel_features,sfeatfile);
     }
-    
+
     void writeObjFeats(){
         int numObjs = segmentNew.frames.at(0).objects.size();
-       
+
         for(size_t i = 0; i < numObjs; i++){
             ofeatfile << segmentNew.frames.at(0).sequenceId  << "," << segmentNew.segmentId << "," << segmentNew.frames.at(0).objects.at(i).objID;
-            print_feats(segmentNew.obj_features.at(i),ofeatfile); 
+            print_feats(segmentNew.obj_features.at(i),ofeatfile);
         }
     }
-    
+
     void computeFreatures(bool normalize) {
-        
+
         segmentNew.getFeatures(normalize);
-        
+
         if (temporal && temporalFlag) {
             computeTemporalFreatures(normalize);
             temporalFlag = false;
@@ -591,7 +591,7 @@ public:
         skel_temporal_features.clear();
         computeObjTemporalFeatures(normalize);
         computeSkelTemporalFeatures(normalize);
-        
+
     }
 
     void computeTemporalFreaturesAdj(bool normalize) {
@@ -600,15 +600,15 @@ public:
         skel_temporal_features.clear();
         computeObjTemporalFeaturesAdj(normalize);
         computeSkelTemporalFeaturesAdj(normalize);
-        
+
     }
-    
+
     void resetActivity() {
         segmentNew.clear();
         segmentOld.clear();
         segmentCount = 0;
         temporalFlag = false;
-        
+
     }
 
     void setCurrentSegment(vector<Frame> &s, int id) {
@@ -654,6 +654,3 @@ public:
     }
 
 };
-
-
-

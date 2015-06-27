@@ -68,8 +68,8 @@ private:
         for (size_t i = 0; i < frameNew.objects.size(); i++) {
             obj_features.push_back(vector<double>(0));
         }
-       
-       
+
+
         for (size_t i = 0; i < frameNew.objects.size(); i++) {
             obj_features.at(i) = frameNew.objects.at(i).features;
             obj_features.at(i).push_back(frameNew.objects.at(i).getCentroid().x);
@@ -81,7 +81,7 @@ private:
     vector<double> computeObjObjFeatures( ObjectProfile & obj1,  ObjectProfile & obj2) {
 
         vector <double> features;
-        // 
+        //
         features.push_back(obj1.centroid.x - obj2.centroid.x);
         features.push_back(obj1.centroid.y - obj2.centroid.y);
         features.push_back(obj1.centroid.z - obj2.centroid.z);
@@ -92,7 +92,7 @@ private:
     void computeObjPairFeatures(bool normalize) {
         // for every frame compute the obj-obj pair features
         Frame frameNew = frames.back();
-        
+
         for (size_t i = 0; i < frameNew.objects.size(); i++) {
             for (size_t j = 0; j < frameNew.objects.size(); j++) {
                 if (i != j) {
@@ -103,11 +103,11 @@ private:
             }
         }
     }
-    
-    vector<double> computeSkelObjFeatures(const Frame_skel & skel, const ObjectProfile & obj) {
+
+    vector<double> computeSkelObjFeatures(const FrameSkel & skel, const ObjectProfile & obj) {
         vector<double> features;
 
-        
+
         double dist = 0;
         for (size_t i = 0; i < skel.transformed_joints.size(); i++) {
             dist = pow((skel.transformed_joints.at(i).x - obj.centroid.x), 2);
@@ -121,10 +121,10 @@ private:
     void computeSkelObjPairFeatures(bool normalize) {
         // for every pair of objects compute the objObj features
         Frame frameNew = frames.back();
-       
+
         for (size_t i = 0; i < frameNew.objects.size(); i++) {
             skel_obj_features.push_back(vector<double> (0));
-            skel_obj_features.at(skel_obj_features.size() - 1) = computeSkelObjFeatures(frameNew.skeleton, frameNew.objects.at(i));      
+            skel_obj_features.at(skel_obj_features.size() - 1) = computeSkelObjFeatures(frameNew.skeleton, frameNew.objects.at(i));
         }
     }
 
@@ -142,7 +142,7 @@ private:
             obj_temporal_features.at(i).push_back(frameNew.objects.at(i).getDistanceSqrBwCentroids(frameOld.objects.at(i)));
 
 
-            //TODO : add transformation as a feature 
+            //TODO : add transformation as a feature
 
             temporalObjfeatfile << frameNew.sequenceId << "," << frameOld.frameNum << "," << frameNew.frameNum << "," << frameNew.objects.at(i).objID;
             print_feats(obj_temporal_features.at(i), temporalObjfeatfile);
@@ -190,7 +190,7 @@ private:
         temporalSkelfeatfile << frameNew.sequenceId << "," << frameOld.frameNum << "," << frameNew.frameNum;
         print_feats(skel_temporal_features, temporalSkelfeatfile);
     }
-    
+
     void writeObjObjFeats() {
 
 
@@ -243,7 +243,7 @@ public:
         skel_features.clear();
         skel_obj_features.clear();
         features_skeleton->reset(false);
-        
+
         computeSkelObjPairFeatures(normalize);
         computeObjFeatures(normalize);
         computeSkelFeatures(normalize);
@@ -277,8 +277,8 @@ public:
     void setCurrentFrames(list<Frame> &f, int id) {
         frameCount++;
         frames = f;
-       
-        
+
+
     }
 
     FrameFeatures(bool Temporal) {
@@ -314,6 +314,3 @@ public:
     }
 
 };
-
-
-

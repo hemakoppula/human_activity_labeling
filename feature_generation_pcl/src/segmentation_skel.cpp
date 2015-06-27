@@ -10,13 +10,13 @@ using namespace std;
 
 class Segmentation_skel {
 private:
-    vector<Frame_skel> skeletons;
+    vector<FrameSkel> skeletons;
 
 
     // vector<double> featureValues;
     vector<vector<int> > segmentation;
 
-    vector<double> get_displacement(const Frame_skel & skel1, const Frame_skel & skel2) {
+    vector<double> get_displacement(const FrameSkel & skel1, const FrameSkel & skel2) {
         vector<double> displacement;
         /* for (int i = 0;i< JOINT_NUM ; i++){
              double dist = pow((skel1.data[i][data_x]-skel2.data[i][data_x]),2)+pow((skel1.data[i][data_y]-skel2.data[i][data_y]),2)+pow((skel1.data[i][data_z]-skel2.data[i][data_z]),2);
@@ -53,7 +53,7 @@ private:
         }
         return (float) to_ret;
     }
-    
+
     float two_norm(vector<double> disp1) {
         double to_ret = 0.0;
         for (size_t i = 0; i < disp1.size(); i++) {
@@ -82,11 +82,11 @@ private:
             }
         }
     }
-    
+
 public:
 
     void addSkelFrame(double **data, double **pos_data, string transformFile) {
-        Frame_skel sf(data, pos_data, transformFile);
+        FrameSkel sf(data, pos_data, transformFile);
         skeletons.push_back(sf);
     }
 
@@ -137,7 +137,7 @@ public:
              vector<double> dista = get_displacement(skeletons.at(B), skeletons.at(C));
              weight = two_norm_squared(distp, dista);
         }
-        
+
         return weight;
     }
     // Using algorithm and implementation
@@ -183,7 +183,7 @@ public:
             segmentation.at(cur_segment).push_back(i);
         }
 
-        
+
 
     }
     void printSegments(std::ofstream &file){
@@ -196,22 +196,22 @@ public:
                 for (size_t j = 1; j < segmentation.at(i).size(); j++) {
                     if(j%50==0) {
                         file << ";";
-                        segCount++; 
-                        file << segCount << ":" ; 
-                        file << segmentation.at(i).at(j)+1; 
+                        segCount++;
+                        file << segCount << ":" ;
+                        file << segmentation.at(i).at(j)+1;
                     }else{
                         file << "," << segmentation.at(i).at(j)+1;
                     }
-                    
+
                 }
                 file << ";";
                 segCount++;
             }
         }
         file << endl;
-    
+
     }
-    
+
 
     Segmentation_skel() {
 
@@ -225,7 +225,7 @@ public:
 };
 
 
-/** 
+/**
 there are 11 joints that have both orientation (3x3) and position (x,y,z) data
                 XN_SKEL_HEAD,
         XN_SKEL_NECK,
@@ -238,7 +238,7 @@ there are 11 joints that have both orientation (3x3) and position (x,y,z) data
         XN_SKEL_LEFT_KNEE,
         XN_SKEL_RIGHT_HIP,
         XN_SKEL_RIGHT_KNEE
-	
+
 there are 4 joints that have only position (x,y,z) data
         XN_SKEL_LEFT_HAND,
         XN_SKEL_RIGHT_HAND,
@@ -246,19 +246,19 @@ there are 4 joints that have only position (x,y,z) data
         XN_SKEL_RIGHT_FOOT
 
  data[][0~8]    -> orientation (3x3 matrix)
-                     3x3 matrix is stored as 
+                     3x3 matrix is stored as
                         0 1 2
                         3 4 5
                         6 7 8
-                     read PDF for description about 3x3 matrix 
+                     read PDF for description about 3x3 matrix
  data[][9~11]   -> x,y,z position for eleven joints
- 
- data_CONF[][0]   -> confidence value of orientation  (data[][0~8]) 
+
+ data_CONF[][0]   -> confidence value of orientation  (data[][0~8])
  data_CONF[][1]   -> confidence value of xyz position (data[][9~11])
- 
+
  data_pos[][0~2] -> x,y,z position for four joints
  data_pos_CONF[]  -> confidence value of xyz position (data_pos[][0~2])
- 
+
  IMAGE[X_RES][Y_RES][0~2]   -> RGB values
  IMAGE[X_RES][Y_RES][3]     -> depth values
 

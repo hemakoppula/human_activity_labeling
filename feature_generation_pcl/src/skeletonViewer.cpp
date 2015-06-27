@@ -30,7 +30,7 @@ void createPointCloud(int ***IMAGE, pcl::PointCloud<PointT>& cloud ) {
 
     for (int y = 0; y < Y_RES; y++) {
         for (int x = 0; x < X_RES; x++) {
-            
+
             if(IMAGE[x][y][3] != 0) {
             	color.assignColor(float(IMAGE[x][y][0])/255.0,float(IMAGE[x][y][1])/255,float(IMAGE[x][y][2])/255);
             	cloud.points.at(index).z = IMAGE[x][y][3]; //*0.001f;
@@ -73,16 +73,16 @@ void createPointCloud(int ***IMAGE, string transformfile,pcl::PointCloud<PointT>
             	cloud.points.at(index).z = 0;//std::numeric_limits<float>::quiet_NaN ();
                 cloud.points.at(index).rgb = color.getFloatRep();
 	    }
-            
-            
+
+
             index++;
         }
     }
     TransformG globalTransform;
     globalTransform = readTranform(transformfile);
     globalTransform.transformPointCloudInPlaceAndSetOrigin(cloud);
-    
-    
+
+
 
 }
 
@@ -90,16 +90,16 @@ void createPointCloud(int ***IMAGE, string transformfile,pcl::PointCloud<PointT>
 void drawUpperSkeleton(double **data, double **pos_data, string transformfile, boost::shared_ptr<pcl::visualization::PCLVisualizer> &p) {
     TransformG globalTransform;
     globalTransform = readTranform(transformfile);
-    Frame_skel sf (data, pos_data,transformfile);
+    FrameSkel sf (data, pos_data,transformfile);
     vector<PointT> points;
     for (size_t i = 0; i < sf.transformed_joints.size(); i++) {
-        
+
         std::stringstream ss;
         ss << "j" << i;
         cout << "adding joint " << ss.str() << endl;
         p->addSphere(sf.transformed_joints.at(i), 10, 1, 0, 0, ss.str(), 0);
     }
-    
+
     p->addLine(sf.transformed_joints.at(0), sf.transformed_joints.at(1), 1, 0, 0, "e1", 0);
     p->addLine(sf.transformed_joints.at(1), sf.transformed_joints.at(2), 1, 0, 0, "e2", 0);
     p->addLine(sf.transformed_joints.at(1), sf.transformed_joints.at(5), 1, 0, 0, "e3", 0);
@@ -109,7 +109,7 @@ void drawUpperSkeleton(double **data, double **pos_data, string transformfile, b
     p->addLine(sf.transformed_joints.at(6), sf.transformed_joints.at(8), 1, 0, 0, "e7", 0);
     p->addLine(sf.transformed_joints.at(4), sf.transformed_joints.at(7), 1, 0, 0, "e8", 0);
 
-  
+
 }
 
 void drawSkeleton(double **data, double **pos_data, string transformfile, boost::shared_ptr<pcl::visualization::PCLVisualizer> & p) {
@@ -226,7 +226,7 @@ main(int argc, char **argv) {
 
 
     std::cerr << "PointCloudColorHandlerRGBField demo." << std::endl;
-   
+
     pcl::visualization::PointCloudColorHandlerRGBField<PointT> handler(cloudPtr);
 
 
@@ -239,7 +239,7 @@ main(int argc, char **argv) {
     p->removePointCloud("cloud_rgb");
 
 }
-/** 
+/**
 there are 11 joints that have both orientation (3x3) and position (x,y,z) data
         XN_SKEL_HEAD,0
         XN_SKEL_NECK,1
@@ -252,7 +252,7 @@ there are 11 joints that have both orientation (3x3) and position (x,y,z) data
         XN_SKEL_LEFT_KNEE,8
         XN_SKEL_RIGHT_HIP,9
         XN_SKEL_RIGHT_KNEE,10
-	
+
 there are 4 joints that have only position (x,y,z) data
         XN_SKEL_LEFT_HAND,11
         XN_SKEL_RIGHT_HAND,12
@@ -260,22 +260,22 @@ there are 4 joints that have only position (x,y,z) data
         XN_SKEL_RIGHT_FOOT,14
 
  data[][0~8]    -> orientation (3x3 matrix)
-                     3x3 matrix is stored as 
+                     3x3 matrix is stored as
                         0 1 2
                         3 4 5
                         6 7 8
-                     read PDF for description about 3x3 matrix 
+                     read PDF for description about 3x3 matrix
  data[][9~11]   -> x,y,z position for eleven joints
- 
- data_CONF[][0]   -> confidence value of orientation  (data[][0~8]) 
+
+ data_CONF[][0]   -> confidence value of orientation  (data[][0~8])
  data_CONF[][1]   -> confidence value of xyz position (data[][9~11])
- 
+
  data_pos[][0~2] -> x,y,z position for four joints
  data_pos_CONF[]  -> confidence value of xyz position (data_pos[][0~2])
- 
+
 X_RES and Y_RES are in constants.h, so just use them.
  IMAGE[X_RES][Y_RES][0~2]   -> RGB values
  IMAGE[X_RES][Y_RES][3]     -> depth values
 
- 
+
  */
