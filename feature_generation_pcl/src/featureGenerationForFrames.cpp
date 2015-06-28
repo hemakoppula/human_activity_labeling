@@ -17,9 +17,6 @@ Copyright (C) 2012 Hema Koppula
 #include "constants.h"
 #include <opencv2/opencv.hpp>
 
-//#include "Point2D.h"
-//#include "HOGFeaturesOfBlock.h"
-//#include "HOG.h"
 #include <pcl/point_types.h>
 #include <list>
 typedef pcl::PointXYZRGB PointT;
@@ -28,7 +25,6 @@ typedef pcl::PointXYZRGB PointT;
 
 #include "readData.cpp"
 #include "frame.cpp"
-//#include "features.cpp"
 
 #include "frameFeatures.cpp"
 
@@ -62,349 +58,289 @@ string dataLocation;
 // print error message
 
 void errorMsg(string message) {
-    cout << "ERROR! " << message << endl;
-    exit(1);
+  cout << "ERROR! " << message << endl;
+  exit(1);
 }
 
 void parseChk(bool chk) {
-    if (!chk) {
-        errorMsg("parsing error.");
-    }
+  if (!chk) {
+    errorMsg("parsing error.");
+  }
 }
 
 void readSegmentsFile() {
-    const string labelfile = dataLocation + "Segmentation.txt";
-    //const string labelfile =  "Segmentation_sampled.txt";
+  const string labelfile = dataLocation + "Segmentation.txt";
 
-    ifstream file((char*) labelfile.c_str(), ifstream::in);
+  ifstream file((char*) labelfile.c_str(), ifstream::in);
 
-    string line;
-    int count = 0;
-    while (getline(file, line)) {
-        stringstream lineStream(line);
-        string element1, element2;
-        parseChk(getline(lineStream, element1, ';'));
-
-        if (element1.compare("END") == 0) {
-            break;
-        }
-
-        //parseChk(getline(lineStream, element2, ',')); // get actor
-        while (getline(lineStream, element2, ';')) {
-            int pos = element2.find_first_of(':');
-            int cluster = atoi(element2.substr(0, pos).c_str());
-            cout << "cluster: " << cluster  <<" :" ;
-            //string start = element2.substr(0, pos);
-            string rest = element2.substr(pos + 1);
-            pos = rest.find_first_of(',');
-            while (pos!=string::npos){
-
-                int fnum = atoi( rest.substr(0,pos).c_str() );
-                cout << fnum << ",";
-                SegmentList[element1][cluster].insert(fnum);
-                rest = rest.substr(pos+1);
-                pos = rest.find_first_of(',');
-            }
-            int fnum = atoi( rest.substr(0,pos).c_str() );
-            cout << fnum << ",";
-            SegmentList[element1][cluster].insert(fnum);
-            cout << endl;
-
-
-        }
-
-
-
-        cout << "\t" << element1  << endl;
-        count++;
+  string line;
+  int count = 0;
+  while (getline(file, line)) {
+    stringstream lineStream(line);
+    string element1, element2;
+    parseChk(getline(lineStream, element1, ';'));
+    if (element1.compare("END") == 0) {
+      break;
     }
-    file.close();
+    while (getline(lineStream, element2, ';')) {
+      int pos = element2.find_first_of(':');
+      int cluster = atoi(element2.substr(0, pos).c_str());
+      cout << "cluster: " << cluster  <<" :" ;
+      //string start = element2.substr(0, pos);
+      string rest = element2.substr(pos + 1);
+      pos = rest.find_first_of(',');
+      while (pos!=string::npos){
+        int fnum = atoi( rest.substr(0,pos).c_str() );
+        cout << fnum << ",";
+        SegmentList[element1][cluster].insert(fnum);
+        rest = rest.substr(pos+1);
+        pos = rest.find_first_of(',');
+      }
+      int fnum = atoi( rest.substr(0,pos).c_str() );
+      cout << fnum << ",";
+      SegmentList[element1][cluster].insert(fnum);
+      cout << endl;
+    }
+    cout << "\t" << element1  << endl;
+    count++;
+  }
+  file.close();
 }
 
 // read label file to get the frame list for each activity
-
 void readLabelFile() {
-    const string labelfile = dataLocation + "labeledFrames.txt";
+  const string labelfile = dataLocation + "labeledFrames.txt";
 
-    ifstream file((char*) labelfile.c_str(), ifstream::in);
+  ifstream file((char*) labelfile.c_str(), ifstream::in);
 
-    string line;
-    int count = 0;
-    while (getline(file, line)) {
-        stringstream lineStream(line);
-        string element1, element2;
-        parseChk(getline(lineStream, element1, ','));
-
-        if (element1.compare("END") == 0) {
-            break;
-        }
-
-        //parseChk(getline(lineStream, element2, ',')); // get actor
-        while (getline(lineStream, element2, ',')) {
-            FrameList[element1].insert(atoi(element2.c_str()));
-        }
-
-
-
-     //   cout << "\t" << element1 << " -> \"" << data_act_map[element1] << "\"" << endl;
-        count++;
+  string line;
+  int count = 0;
+  while (getline(file, line)) {
+    stringstream lineStream(line);
+    string element1, element2;
+    parseChk(getline(lineStream, element1, ','));
+    if (element1.compare("END") == 0) {
+      break;
     }
-    file.close();
+    while (getline(lineStream, element2, ',')) {
+      FrameList[element1].insert(atoi(element2.c_str()));
+    }
+    count++;
+  }
+  file.close();
 }
 
 void readDataActMap(string actfile) {
-    const string mapfile = dataLocation + actfile;
+  const string mapfile = dataLocation + actfile;
+  printf("Opening map of data to activity: \"%s\"\n",
+          (char*) mapfile.c_str());
+  ifstream file((char*) mapfile.c_str(), ifstream::in);
 
-    printf("Opening map of data to activity: \"%s\"\n",
-            (char*) mapfile.c_str());
-    ifstream file((char*) mapfile.c_str(), ifstream::in);
+  string line;
+  int count = 0;
+  while (getline(file, line)) {
+    stringstream lineStream(line);
+    string element1, element2, element3;
+    parseChk(getline(lineStream, element1, ','));
 
-    string line;
-    int count = 0;
-    while (getline(file, line)) {
-        stringstream lineStream(line);
-        string element1, element2, element3;
-        parseChk(getline(lineStream, element1, ','));
-
-        if (element1.compare("END") == 0) {
-            break;
-        }
-        parseChk(getline(lineStream, element2, ','));
-        if (element1.length() != 10) {
-            errorMsg("Data Act Map file format mismatch..");
-        }
-
-        data_act_map[element1] = element2;
-        parseChk(getline(lineStream, element3, ',')); // get actor
-        while (getline(lineStream, element3, ',')) {
-                        cout << element3 << endl;
-            //vector<string> fields;
-            //boost::split_regex( fields, element3, boost::regex( ":" ) );
-                        int v = element3.find(":",0);
-            cout << element3.substr(0,v) << endl;
-            cout << element3.substr(v+1) << endl;
-
-            data_obj_map[element1].push_back(element3.substr(0,v));
-
-            data_obj_type_map[element1].push_back(element3.substr(v+1));
-        }
-
-        cout << "\t" << element1 << " : " << data_act_map[element1] << endl;
-        count++;
+    if (element1.compare("END") == 0) {
+        break;
     }
-    file.close();
-
-    if (count == 0) {
-        errorMsg("File does not exist or is empty!\n");
+    parseChk(getline(lineStream, element2, ','));
+    if (element1.length() != 10) {
+        errorMsg("Data Act Map file format mismatch..");
     }
-    printf("\tcount = %d\n\n", count);
+
+    data_act_map[element1] = element2;
+    parseChk(getline(lineStream, element3, ',')); // get actor
+    while (getline(lineStream, element3, ',')) {
+      cout << element3 << endl;
+      int v = element3.find(":",0);
+      cout << element3.substr(0,v) << endl;
+      cout << element3.substr(v+1) << endl;
+
+      data_obj_map[element1].push_back(element3.substr(0,v));
+
+      data_obj_type_map[element1].push_back(element3.substr(v+1));
+    }
+
+    cout << "\t" << element1 << " : " << data_act_map[element1] << endl;
+    count++;
+  }
+  file.close();
+
+  if (count == 0) {
+    errorMsg("File does not exist or is empty!\n");
+  }
+  printf("\tcount = %d\n\n", count);
 }
 
-
-
-
 // read file that maps data and activity
-
 void readDataActMapOld(string actfile) {
-    const string mapfile = dataLocation + actfile;
-
-    printf("Opening map of data to activity: \"%s\"\n", (char*) mapfile.c_str());
-    ifstream file((char*) mapfile.c_str(), ifstream::in);
-
-    string line;
-    int count = 0;
-    while (getline(file, line)) {
-        stringstream lineStream(line);
-        string element1, element2, element3;
-        parseChk(getline(lineStream, element1, ','));
-
-        if (element1.compare("END") == 0) {
-            break;
-        }
-        parseChk(getline(lineStream, element2, ','));
-        if (element1.length() != 10) {
-            errorMsg("Data Act Map file format mismatch..");
-        }
-
-        data_act_map[element1] = element2;
-        parseChk(getline(lineStream, element3, ',')); // get actor
-        while (getline(lineStream, element3, ',')) {
-            data_obj_map[element1].push_back(element3);
-        }
-
-
-
-        cout << "\t" << element1 << " : " << data_act_map[element1]  << endl;
-        count++;
+  const string mapfile = dataLocation + actfile;
+  printf("Opening map of data to activity: \"%s\"\n", (char*) mapfile.c_str());
+  ifstream file((char*) mapfile.c_str(), ifstream::in);
+  string line;
+  int count = 0;
+  while (getline(file, line)) {
+    stringstream lineStream(line);
+    string element1, element2, element3;
+    parseChk(getline(lineStream, element1, ','));
+    if (element1.compare("END") == 0) {
+      break;
     }
-    file.close();
-
-    if (count == 0) {
-        errorMsg("File does not exist or is empty!\n");
+    parseChk(getline(lineStream, element2, ','));
+    if (element1.length() != 10) {
+      errorMsg("Data Act Map file format mismatch..");
     }
-    printf("\tcount = %d\n\n", count);
+    data_act_map[element1] = element2;
+    parseChk(getline(lineStream, element3, ',')); // get actor
+    while (getline(lineStream, element3, ',')) {
+      data_obj_map[element1].push_back(element3);
+    }
+    cout << "\t" << element1 << " : " << data_act_map[element1]  << endl;
+    count++;
+  }
+  file.close();
+
+  if (count == 0) {
+    errorMsg("File does not exist or is empty!\n");
+  }
+  printf("\tcount = %d\n\n", count);
 }
 
 void printData(FILE* pRecFile, vector<double> feats) {
-    for (int i = 0; i < feats.size(); i++) {
-        if (feats.at(i) == 0)
-            fprintf(pRecFile, "%.1f,", feats.at(i));
-        else
-            fprintf(pRecFile, "%.7f,", feats.at(i));
-    }
+  for (int i = 0; i < feats.size(); i++) {
+    if (feats.at(i) == 0)
+      fprintf(pRecFile, "%.1f,", feats.at(i));
+    else
+      fprintf(pRecFile, "%.7f,", feats.at(i));
+  }
 }
 
 void printData(FILE* pRecFile, double * feats, int numFeats) {
-    for (int i = 0; i < numFeats; i++) {
-        fprintf(pRecFile, "%.7f,", feats[i]);
-    }
+  for (int i = 0; i < numFeats; i++) {
+    fprintf(pRecFile, "%.7f,", feats[i]);
+  }
 }
 
 void printData(FILE* pRecFile, int * feats, int numFeats) {
-    for (int i = 0; i < numFeats; i++) {
-        fprintf(pRecFile, "%d,", feats[i]);
-    }
+  for (int i = 0; i < numFeats; i++) {
+    fprintf(pRecFile, "%d,", feats[i]);
+  }
 }
 
 int getCluster(int frameNum, string id) {
-    for (map< int, set<int> >::iterator i = SegmentList[id].begin(); i != SegmentList[id].end(); i++) {
-        if (i->second.find(frameNum) != i->second.end()) {
-            return i->first;
-        }
+  for (map< int, set<int> >::iterator i = SegmentList[id].begin();
+       i != SegmentList[id].end(); i++) {
+    if (i->second.find(frameNum) != i->second.end()) {
+      return i->first;
     }
-    return 0;
+  }
+  return 0;
 }
 
 /*
  *
  */
 int main(int argc, char** argv) {
+  dataLocation = (string)argv[1] + "/";
+  string actfile =  (string)argv[2];
+  string mirrored_dataLocation = "";
+  bool compressed = false;
+  if (argc >= 3){
+  	string c = (string)argv[3];
+  	if (c.compare("compressed")==0){
+  		compressed = true;
+  	}
+  }
+  readDataActMap(actfile);
+  readSegmentsFile();
 
-    dataLocation = (string)argv[1] + "/";
-    string actfile =  (string)argv[2];
-    string mirrored_dataLocation = "";
-//    string outputFile = "data_extracted/features.txt"; //+ (string)argv[1] + ".txt";
-    bool compressed = false;
-    if (argc >= 3){
-    	string c = (string)argv[3];
-    	if (c.compare("compressed")==0){
-    		compressed = true;
-    	}
+  // get all names of file from the map
+  vector<string> all_files;
+  map<string, string>::iterator it = data_act_map.begin();
+  while (it != data_act_map.end()) {
+      all_files.push_back(it->first);
+      cout << it->first << endl;
+      it++;
+  }
+  printf("Number of Files to be processed = %d\n", all_files.size());
+
+  double **data; //[JOINT_NUM][JOINT_DATA_NUM];
+  int **data_CONF; //[JOINT_NUM][JOINT_DATA_TYPE_NUM]
+  double **pos_data; //[POS_JOINT_NUM][POS_JOINT_DATA_NUM];
+  int *pos_data_CONF; //[POS_JOINT_NUM]
+  data = new double*[JOINT_NUM];
+  data_CONF = new int*[JOINT_NUM];
+  for (int i = 0; i < JOINT_NUM; i++) {
+    data[i] = new double[JOINT_DATA_NUM];
+    data_CONF[i] = new int[JOINT_DATA_TYPE_NUM];
+  }
+  pos_data = new double*[POS_JOINT_NUM];
+  pos_data_CONF = new int[POS_JOINT_NUM];
+  for (int i = 0; i < POS_JOINT_NUM; i++) {
+    pos_data[i] = new double[POS_JOINT_DATA_NUM];
+  }
+
+  int ***IMAGE; // [X_RES][Y_RES]
+  IMAGE = new int**[X_RES];
+  for (int i = 0; i < X_RES; i++) {
+    IMAGE[i] = new int*[Y_RES];
+    for (int j = 0; j < Y_RES; j++) {
+      IMAGE[i][j] = new int[RGBD_data];
     }
-    readDataActMap(actfile);
-    //readLabelFile();
-    readSegmentsFile();
+  }
 
-    // get all names of file from the map
-    vector<string> all_files;
-    map<string, string>::iterator it = data_act_map.begin();
-    while (it != data_act_map.end()) {
-        all_files.push_back(it->first);
-        cout << it->first << endl;
-        it++;
+  vector<vector<double> > objData;
+  vector<vector<int> > objPCInds;
+  string lastActId = "0";
+  for (size_t i = 0; i < all_files.size(); i++) {
+    int count = 1;
+    vector <string> fileList(data_obj_map[all_files.at(i)].size());
+    for (size_t j = 0; j < data_obj_map[all_files.at(i)].size(); j++) {
+      fileList.at(j) = dataLocation + "/" + all_files.at(i) + "_obj"
+                       + data_obj_map[all_files.at(i)].at(j) + ".txt";
     }
-    printf("Number of Files to be processed = %d\n", all_files.size());
-//    printf("Processed data goes to (%s)\n\n", (char*) outputFile.c_str());
-
-    //FILE* pRecFile;
-    //pRecFile = fopen((char*) outputFile.c_str(), "w");
-
-
-    double **data; //[JOINT_NUM][JOINT_DATA_NUM];
-    int **data_CONF; //[JOINT_NUM][JOINT_DATA_TYPE_NUM]
-    double **pos_data; //[POS_JOINT_NUM][POS_JOINT_DATA_NUM];
-    int *pos_data_CONF; //[POS_JOINT_NUM]
-    data = new double*[JOINT_NUM];
-    data_CONF = new int*[JOINT_NUM];
-    for (int i = 0; i < JOINT_NUM; i++) {
-        data[i] = new double[JOINT_DATA_NUM];
-        data_CONF[i] = new int[JOINT_DATA_TYPE_NUM];
+    vector <string> objPCFileList(data_obj_map[all_files.at(i)].size());
+    for (size_t j = 0; j < data_obj_map[all_files.at(i)].size(); j++) {
+      objPCFileList.at(j) = dataLocation + "/objects/" + all_files.at(i)
+                            + "_obj" + data_obj_map[all_files.at(i)].at(j)
+                            + ".txt";
     }
-    pos_data = new double*[POS_JOINT_NUM];
-    pos_data_CONF = new int[POS_JOINT_NUM];
-    for (int i = 0; i < POS_JOINT_NUM; i++) {
-        pos_data[i] = new double[POS_JOINT_DATA_NUM];
-    }
+    // for both mirrored and non mirrored data make j<2 ; for now use only mirrored
+    for (int j = 0; j < 1; j++) {
+      Frame::FrameNum = 0;
+      bool mirrored = (j == 0) ? false : true;
+      bool skipOdd = false;
+      const string transformfile = dataLocation + all_files[i] + "_globalTransform.txt";
+      readData* DATA = new readData(dataLocation, all_files[i], data_act_map,
+                                    i + 1, mirrored, mirrored_dataLocation,
+                                    skipOdd, fileList, objPCFileList, compressed);
+      int status = DATA->readNextFrame(data, pos_data, data_CONF, pos_data_CONF,
+                                       IMAGE, objData, objPCInds);
+      FrameFeatures ff(true);
+      list<Frame> frames;
 
-    int ***IMAGE; // [X_RES][Y_RES]
-    IMAGE = new int**[X_RES];
-    for (int i = 0; i < X_RES; i++) {
-        IMAGE[i] = new int*[Y_RES];
-        for (int j = 0; j < Y_RES; j++) {
-            IMAGE[i][j] = new int[RGBD_data];
+      int oldSegNum = 1;
+      while (status > 0) {
+        Frame frame(IMAGE, data, pos_data, objData, all_files[i], status, transformfile, objPCInds);
+        frames.push_back(frame);
+        if(frames.size()>2) {
+          frames.pop_front();
         }
+        if (lastActId.compare(frame.sequenceId) != 0) {
+          cout << "activity changed, new id : " << frame.sequenceId << endl;
+          lastActId = frame.sequenceId;
+          ff.resetActivity();
+        }
+        ff.setCurrentFrames(frames,status);
+        ff.computeFreatures(true);
+        status = DATA->readNextFrame(data, pos_data, data_CONF, pos_data_CONF, IMAGE, objData, objPCInds);
+        count++;
+      }
     }
-
-
-    //fileList[1] = "data/0829113826_obj_2.txt";
-    vector<vector<double> > objData;
-    vector<vector<int> > objPCInds;
-    string lastActId = "0";
-    for (size_t i = 0; i < all_files.size(); i++) {
-        int count = 1;
-
-        vector <string> fileList(data_obj_map[all_files.at(i)].size());
-        for (size_t j = 0; j < data_obj_map[all_files.at(i)].size(); j++) {
-            fileList.at(j) = dataLocation + "/" + all_files.at(i) + "_obj" + data_obj_map[all_files.at(i)].at(j) + ".txt";
-            //fileList.at(j) = dataLocation + "/new_object_features/" + all_files.at(i) + "_object_features_" + data_obj_map[all_files.at(i)].at(j) + ".txt";
-        }
-        vector <string> objPCFileList(data_obj_map[all_files.at(i)].size());
-        for (size_t j = 0; j < data_obj_map[all_files.at(i)].size(); j++) {
-            //objPCFileList.at(j) = dataLocation + "/objects/" + all_files.at(i) + "_obj" + data_obj_map[all_files.at(i)].at(j) + ".txt";
-            objPCFileList.at(j) = dataLocation + "/objects/" + all_files.at(i) + "_obj" + data_obj_map[all_files.at(i)].at(j) + ".txt";
-        }
-
-        // for both mirrored and non mirrored data make j<2 ; for now use only mirrored
-        for (int j = 0; j < 1; j++) {
-            Frame::FrameNum = 0;
-            bool mirrored = (j == 0) ? false : true;
-            bool skipOdd = false;
-            const string transformfile = dataLocation + all_files[i] + "_globalTransform.txt";
-            readData* DATA = new readData(dataLocation, all_files[i], data_act_map, i + 1, mirrored, mirrored_dataLocation, skipOdd, fileList, objPCFileList, compressed);
-            int status = DATA->readNextFrame(data, pos_data, data_CONF, pos_data_CONF, IMAGE, objData, objPCInds);
-            FrameFeatures ff(true);
-            list<Frame> frames;
-            /*FeaturesSkel* features_skeleton;
-            if (useSkeleton)
-                features_skeleton = new FeaturesSkel((char*) all_files[i].c_str(), pRecFile, mirrored);
-
-
-            FeaturesSkelRGBD* features_rgbd = new FeaturesSkelRGBD(pRecFile, mirrored);
-             */
-            int oldSegNum = 1;
-            while (status > 0) {
-
-                //cout << "status = " << status << endl;
-                // if the frame belongs to a segment
-
-              // Frame *frame= new Frame(IMAGE, data, pos_data, objData, all_files[i], status, transformfile, objPCInds);
-                Frame frame(IMAGE, data, pos_data, objData, all_files[i], status, transformfile, objPCInds);
-                frames.push_back(frame);
-                if(frames.size()>2){frames.pop_front();}
-
-                if (lastActId.compare(frame.sequenceId) != 0) {
-                    cout << "activity changed, new id : " << frame.sequenceId << endl;
-                    lastActId = frame.sequenceId;
-                    ff.resetActivity();
-                }
-
-
-                ff.setCurrentFrames(frames,status);
-                ff.computeFreatures(true);
-
-
-
-
-
-                status = DATA->readNextFrame(data, pos_data, data_CONF, pos_data_CONF, IMAGE, objData, objPCInds);
-
-                count++;
-            }
-        }
-    }
-   // fclose(pRecFile);
-
-    printf("ALL DONE.\n\n");
-
-    return 0;
+  }
+  printf("ALL DONE.\n\n");
+  return 0;
 }

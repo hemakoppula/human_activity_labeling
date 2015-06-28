@@ -17,6 +17,17 @@ Copyright (C) 2012 Hema Koppula
 typedef pcl::PointXYZRGB PointT;
 
 class FrameSkel {
+ private:
+  void computePosition();
+
+  void transformJointPositions(string transformFile);
+
+  void initialize_local_joints(bool partial);
+
+  void initialize_data(double **data_, double **pos_data_);
+
+  void initialize_head_orientation();
+
  public:
   double **data;  // [JOINT_NUM][JOINT_DATA_NUM];
   int **data_CONF;  // [JOINT_NUM][JOINT_DATA_TYPE_NUM]
@@ -33,10 +44,6 @@ class FrameSkel {
 
   double* computeLocalLoc(double head_ori[9], double head_pos[3],
                           double hand_pos[3]);
-
-  void computePosition();
-
-  void transformJointPositions(string transformFile);
 
   void initialize(double **data_, double **pos_data_, string transformFile);
 

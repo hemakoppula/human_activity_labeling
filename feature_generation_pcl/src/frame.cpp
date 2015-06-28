@@ -492,8 +492,6 @@ void Frame::computeHogDescriptors() {
   cvReleaseImage(&image);
 }
 
-
-
 void Frame::printHOGFeats() {
   int count = 0;
   for (std::vector<ObjectProfile>::iterator it = objects.begin();
@@ -562,10 +560,10 @@ Frame::Frame() {
 
 Frame::Frame(int ***IMAGE, double** data, double **pos_data,
              vector<vector<double> > &objFeats, string seqId, int fnum,
-             string transformfile) {
-  frameNum = fnum;
-  sequenceId = seqId;
-  findTable = true;
+             string transformfile)
+    : frameNum (fnum),
+      sequenceId (seqId),
+      findTable (false) {
   createPointCloud(IMAGE, transformfile);
   savePointCloud();
   skeleton.initialize(data, pos_data, transformfile);
@@ -581,10 +579,10 @@ Frame::Frame(int ***IMAGE, double** data, double **pos_data,
 }
 
 Frame::Frame(int ***IMAGE, double** data, double **pos_data,
-             vector<vector<double> > &objFeats, string seqId, int fnum) {
-  frameNum = fnum;
-  sequenceId = seqId;
-  findTable = false;
+             vector<vector<double> > &objFeats, string seqId, int fnum)
+   : frameNum (fnum),
+     sequenceId (seqId),
+     findTable (false) {
   createPointCloud(IMAGE);
   skeleton.initialize(data, pos_data);
   FeaturesSkelRGBD *features_skeleton_rgbd = new FeaturesSkelRGBD(false);
@@ -607,30 +605,11 @@ Frame::Frame(int ***IMAGE, double** data, double **pos_data,
 
 Frame::Frame(int ***IMAGE, double** data, double **pos_data,
              vector<vector<double> > &objFeats, string seqId, int fnum,
-             string transformfile, vector<vector<int> > &objPCInds) {
-  frameNum = fnum;
-  sequenceId = seqId;
-  findTable = false;
-  createPointCloud(IMAGE, transformfile);
-  skeleton.initialize(data, pos_data, transformfile);
-  int count = 0;
-  for (size_t i = 0; i < objFeats.size(); i++) {
-    count++;
-    ObjectProfile tmp(objFeats.at(i), cloud, tablePoints, count, transformfile,
-                      objPCInds.at(i));
-    objects.push_back(tmp);
-  }
-  computeHogDescriptors();
-  computeObjectHog();
-}
-
-Frame::Frame(int ***IMAGE, double** data, double **pos_data,
-             vector<vector<double> > &objFeats, string seqId, int fnum,
              string transformfile, vector<vector<int> > &objPCInds,
-             bool partial) {
-  frameNum = fnum;
-  sequenceId = seqId;
-  findTable = false;
+             bool partial)
+    : frameNum (fnum),
+      sequenceId (seqId),
+      findTable (false) {
   createPointCloud(IMAGE, transformfile);
   if (partial) {
     skeleton.initialize_partial(data, pos_data, transformfile);
@@ -644,7 +623,6 @@ Frame::Frame(int ***IMAGE, double** data, double **pos_data,
                       objPCInds.at(i));
     objects.push_back(tmp);
   }
-
   computeHogDescriptors();
   computeObjectHog();
 }
@@ -652,10 +630,10 @@ Frame::Frame(int ***IMAGE, double** data, double **pos_data,
 Frame::Frame(int ***IMAGE, double** data, double **pos_data,
              vector<vector<double> > &objFeats, string seqId, int fnum,
              string transformfile, vector<vector<int> > &objPCInds,
-             vector<string> types) {
-  frameNum = fnum;
-  sequenceId = seqId;
-  findTable = false;
+             vector<string> types)
+    : frameNum (fnum),
+      sequenceId (seqId),
+      findTable (false) {
   createPointCloud(IMAGE, transformfile);
   skeleton.initialize_partial(data, pos_data, transformfile);
   int count = 0;

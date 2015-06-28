@@ -189,9 +189,6 @@ class Frame {
   Frame(int ***IMAGE, double** data, double **pos_data,
         vector<vector<double> > &objFeats, string seqId, int fnum);
 
-  Frame(int ***IMAGE, double** data, double **pos_data,
-        vector<vector<double> > &objFeats, string seqId, int fnum,
-        string transformfile, vector<vector<int> > &objPCInds);
 
   Frame(int ***IMAGE, double** data, double **pos_data,
         vector<vector<double> > &objFeats, string seqId, int fnum,
@@ -200,7 +197,8 @@ class Frame {
 
   Frame(int ***IMAGE, double** data, double **pos_data,
         vector<vector<double> > &objFeats, string seqId, int fnum,
-        string transformfile, vector<vector<int> > &objPCInds, bool partial);
+        string transformfile, vector<vector<int> > &objPCInds,
+        bool partial = false);
 
   ~Frame();
 };
