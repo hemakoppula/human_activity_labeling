@@ -23,44 +23,45 @@ class Point2D
 
 class HOGFeaturesOfBlock {
  public:
-  static int const numDirections=9;
-  static int const numFeats=27+4+1;
+  static int const numDirections = 9;
+  static int const numFeats = 27 + 4 + 1;
   double feats[numFeats];
 
   static void aggregateFeatsOfBlocks(
-      std::vector<HOGFeaturesOfBlock> & featsOfBlocks, HOGFeaturesOfBlock & aggFeats) {
-    size_t numBlocks=featsOfBlocks.size();
-    for(size_t f=0;f<numFeats;f++) {
-      aggFeats.feats[f]=0;
-      for(size_t b=0;b<numBlocks;b++) {
-        aggFeats.feats[f]+=featsOfBlocks[b].feats[f];
+      std::vector<HOGFeaturesOfBlock> & featsOfBlocks,
+      HOGFeaturesOfBlock & aggFeats) {
+    size_t numBlocks = featsOfBlocks.size();
+    for(size_t f = 0; f < numFeats; f++) {
+      aggFeats.feats[f] = 0;
+      for(size_t b = 0; b < numBlocks; b++) {
+        aggFeats.feats[f] += featsOfBlocks[b].feats[f];
       }
-      aggFeats.feats[f]/=numBlocks;
+      aggFeats.feats[f] /= numBlocks;
     }
   }
 
   void pushBackAllFeats(std::vector<float> & featureVector)
   {
-    for(size_t i=0;i<numFeats-1;i++) {  // the last one always seems to be 0
+    for(size_t i = 0; i < numFeats-1; i++) {  // the last one always seems to be 0
       featureVector.push_back(feats[i]);
     }
   }
 
   void pushBackAllDiffFeats(const HOGFeaturesOfBlock & other,std::vector<float> & featureVector)
   {
-    for(size_t i=0;i<numFeats-1;i++) {  // the last one always seems to be 0
+    for(size_t i = 0; i < numFeats-1; i++) {  // the last one always seems to be 0
       featureVector.push_back(fabs(feats[i]-other.feats[i]));
     }
   }
 
   void pushNonContrastFeats(std::vector<float> & featureVector)
   {
-    for(size_t i=numDirections*2;i<numFeats-1;i++) {
+    for(size_t i = numDirections*2; i < numFeats-1; i++) {
       featureVector.push_back(feats[i]);
     }
   }
   void pushTextureFeats(std::vector<float> & featureVector) {
-    for(size_t i=numDirections*3;i<numFeats-1;i++) {
+    for(size_t i = numDirections*3; i < numFeats-1; i++) {
       featureVector.push_back(feats[i]);
     }
   }
@@ -83,16 +84,16 @@ public :
 
   void getFeatVec(int blockY, int blockX, HOGFeaturesOfBlock & featsB)
   {
-    for(int featIndex=0;featIndex<HOGFeaturesOfBlock::numFeats;featIndex++)
+    for(int featIndex = 0; featIndex<HOGFeaturesOfBlock::numFeats; featIndex++)
         featsB.feats[featIndex] = *(feat + featIndex*numBlocksOutX*numBlocksOutY
                                     + blockX*numBlocksOutY + blockY);
   }
 
   static void saveFloatImage ( const char* filename, const IplImage * image) {
     IplImage * saveImage = cvCreateImage(cvGetSize(image), IPL_DEPTH_32F, 3);
-    cvConvertScale ( image, saveImage, 255, 0 );
-    cvSaveImage( filename, saveImage);
-    cvReleaseImage ( &saveImage );
+    cvConvertScale(image, saveImage, 255, 0);
+    cvSaveImage(filename, saveImage);
+    cvReleaseImage(&saveImage);
   }
 
   void saveFeatAsImages()
@@ -136,45 +137,49 @@ public :
                            HOGFeaturesOfBlock & hogFeats) {
     // bin pixels into blocksOuts()
     int numPointsInBlock[numBlocksOutY][numBlocksOutX];
-    for(int y=0;y<numBlocksOutY;y++)
-      for(int x=0;x<numBlocksOutX;x++)
-        numPointsInBlock[y][x]=0;
+    for(int y = 0; y < numBlocksOutY; y++) {
+      for(int x = 0; x < numBlocksOutX; x++) {
+        numPointsInBlock[y][x] = 0;
+      }
+    }
 
     Point2D outBlock;
 
     for(int i=0;i<interestPointsInImage.size();i++) {
-      pixel2BlockOut (interestPointsInImage[i],outBlock);
-      if(outBlock.x!=-1) // not out of range .. boundary blocks are out of range
+      pixel2BlockOut(interestPointsInImage[i], outBlock);
+      if(outBlock.x != -1) {  // not out of range .. boundary blocks are out of range
         numPointsInBlock[outBlock.y][outBlock.x]++;
+      }
     }
 
     int max=-1;
     //find the block(s) where most pixels lie
-    for(int y=0;y<numBlocksOutY;y++)
-      for(int x=0;x<numBlocksOutX;x++) {
-        if(max<numPointsInBlock[y][x])
-          max=numPointsInBlock[y][x];
+    for(int y = 0; y < numBlocksOutY; y++)
+      for(int x = 0; x < numBlocksOutX; x++) {
+        if(max < numPointsInBlock[y][x])
+          max = numPointsInBlock[y][x];
       }
     HOGFeaturesOfBlock temp;
     std::vector<HOGFeaturesOfBlock> maxBlockFeats;
-    for(int y=0;y<numBlocksOutY;y++)
-      for(int x=0;x<numBlocksOutX;x++) {
-        if(max==numPointsInBlock[y][x]) {
-          getFeatVec (y,x,temp);
+    for(int y = 0; y < numBlocksOutY; y++) {
+      for(int x = 0; x < numBlocksOutX; x++) {
+        if(max == numPointsInBlock[y][x]) {
+          getFeatVec(y,x,temp);
           maxBlockFeats.push_back(temp);
         }
       }
-    HOGFeaturesOfBlock::aggregateFeatsOfBlocks (maxBlockFeats,hogFeats);
+    }
+    HOGFeaturesOfBlock::aggregateFeatsOfBlocks(maxBlockFeats, hogFeats);
     //push all out blocks with max to a vector and aggregate
   }
 
-  void pixel2BlockOut(const Point2D & p,Point2D  & b ) {
+  void pixel2BlockOut(const Point2D & p, Point2D & b ) {
     //return -1 if out of range block
-    b.x=((int)round((float)p.x/(float)sbin)) -1 ;
-    b.y=((int)round((float)p.y/(float)sbin)) -1;
+    b.x = ((int)round((float)p.x/(float)sbin)) -1 ;
+    b.y = ((int)round((float)p.y/(float)sbin)) -1;
     //cout <<"block selected"<< b.x<<","<<b.y<<" for pixel "<<p.x<<","<<p.y<<endl;
-    if(b.x<0 || b.x>=numBlocksOutX ||b.y<0 || b.y>=numBlocksOutY )
-      b.x=-1;
+    if(b.x < 0 || b.x >= numBlocksOutX || b.y < 0 || b.y >= numBlocksOutY )
+      b.x = -1;
   }
 
   static inline double min(double x, double y) { return (x <= y ? x : y); }
@@ -186,20 +191,20 @@ public :
   static  int const sbin=8;
 
   void computeHog(IplImage * img) {
-    assert(img->nChannels==3);
+    assert(img->nChannels == 3);
     double * matlabImage =
         (double *)calloc(img->width*img->height*img->nChannels,sizeof(double));
-    int ndims[3]={img->height,img->width,3};
-    for(size_t y=0;y<img->height;y++)
-       for(size_t x=0;x<img->width;x++) {
+    int ndims[3] = {img->height, img->width, 3};
+    for(size_t y = 0; y < img->height; y++)
+       for(size_t x = 0; x<img->width; x++) {
          CvScalar s;
-         s=cvGet2D(img,y,x); // get the (i,j) pixel value
+         s = cvGet2D(img, y, x); // get the (i,j) pixel value
          for(size_t ch=0;ch<img->nChannels;ch++) {
            *(matlabImage + getOffsetInMatlabImage(y, x, ch, img->height,
                                                   img->width)) = s.val[ch];
          }
       }
-    process (matlabImage,ndims);
+    process(matlabImage, ndims);
     free(matlabImage);
   }
   // Assume IMAGE is width x height x 4
@@ -210,20 +215,20 @@ public :
     double * matlabImage=
         (double *)calloc(width*height*(NCHANNELS-1),sizeof(double));
 
-    for(size_t y=0; y < height; y++)
-      for(size_t x=0; x < width; x++) {
-      	for(size_t ch=0; ch < (NCHANNELS-1); ch++)
+    for(size_t y = 0; y < height; y++)
+      for(size_t x = 0; x < width; x++) {
+      	for(size_t ch = 0; ch < (NCHANNELS-1); ch++)
           *(matlabImage + getOffsetInMatlabImage(y, x, ch, height, width))
               = (double) IMAGE[x][y][ch];
       }
-    process (matlabImage,ndims);
+    process(matlabImage, ndims);
     free(matlabImage);
   }
 
   size_t getOffsetInMatlabImage(size_t y, size_t x, size_t channel,
                                 size_t dimY, size_t dimX) {
-    assert(channel*dimX*dimY+x*dimY+y<dimX*dimY*3);
-    return channel*dimX*dimY+x*dimY+y;
+    assert(channel*dimX*dimY + x*dimY + y < dimX*dimY*3);
+    return channel*dimX*dimY + x*dimY + y;
   }
 
   // main function:
