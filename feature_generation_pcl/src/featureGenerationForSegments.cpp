@@ -1,3 +1,6 @@
+/*
+Copyright (C) 2012 Hema Koppula
+*/
 
 #include <cstdlib>
 #include <cstdio>

@@ -1,4 +1,6 @@
-//#include "frame.cpp"
+/*
+Copyright (C) 2012 Hema Koppula
+*/
 #include "constants.h"
 #include <iostream>
 #include <fstream>

@@ -1,9 +1,6 @@
 /*
- * File:   featureGeneration.cpp
- * Author: hema
- *
- * Created on August 29, 2011, 6:16 PM
- */
+Copyright (C) 2012 Hema Koppula
+*/
 
 #include <cstdlib>
 #include <cstdio>

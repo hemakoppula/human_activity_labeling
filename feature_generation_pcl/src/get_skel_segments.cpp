@@ -1,3 +1,7 @@
+/*
+Copyright (C) 2012 Hema Koppula
+*/
+
 #include <pcl/io/pcd_io.h>
 #include "constants.h"
 
@@ -128,7 +132,7 @@ main(int argc, char **argv) {
     int method = atoi(argv[3]);
     float threshold = atof(argv[4]);
     dataLocation = argv[1];
-     string actfile = (string) argv[2];    
+     string actfile = (string) argv[2];
     readDataActMap(actfile);
     vector<string> all_files;
     map<string, string>::iterator it = data_act_map.begin();
@@ -136,7 +140,7 @@ main(int argc, char **argv) {
         all_files.push_back(it->first);
         it++;
     }
-    
+
     double **data; //[JOINT_NUM][JOINT_DATA_NUM];
     int **data_CONF; //[JOINT_NUM][JOINT_DATA_TYPE_NUM]
     double **pos_data; //[POS_JOINT_NUM][POS_JOINT_DATA_NUM];
@@ -180,7 +184,7 @@ main(int argc, char **argv) {
         } while (status > 0);
 
         //segSkel.computeSegments();
-        
+
         segSkel.computeSegmentsDynamic(threshold,method);
         segmentfile << all_files.at(i) << ";";
         segSkel.printSegments(segmentfile);
@@ -188,7 +192,7 @@ main(int argc, char **argv) {
     }
     segmentfile.close();
 }
-    /** 
+    /**
     there are 11 joints that have both orientation (3x3) and position (x,y,z) data
             XN_SKEL_HEAD,0
             XN_SKEL_NECK,1
@@ -201,7 +205,7 @@ main(int argc, char **argv) {
             XN_SKEL_LEFT_KNEE,8
             XN_SKEL_RIGHT_HIP,9
             XN_SKEL_RIGHT_KNEE,10
-	
+
     there are 4 joints that have only position (x,y,z) data
             XN_SKEL_LEFT_HAND,11
             XN_SKEL_RIGHT_HAND,12
@@ -209,22 +213,22 @@ main(int argc, char **argv) {
             XN_SKEL_RIGHT_FOOT,14
 
      data[][0~8]    -> orientation (3x3 matrix)
-                         3x3 matrix is stored as 
+                         3x3 matrix is stored as
                             0 1 2
                             3 4 5
                             6 7 8
-                         read PDF for description about 3x3 matrix 
+                         read PDF for description about 3x3 matrix
      data[][9~11]   -> x,y,z position for eleven joints
- 
-     data_CONF[][0]   -> confidence value of orientation  (data[][0~8]) 
+
+     data_CONF[][0]   -> confidence value of orientation  (data[][0~8])
      data_CONF[][1]   -> confidence value of xyz position (data[][9~11])
- 
+
      data_pos[][0~2] -> x,y,z position for four joints
      data_pos_CONF[]  -> confidence value of xyz position (data_pos[][0~2])
- 
+
     X_RES and Y_RES are in constants.h, so just use them.
      IMAGE[X_RES][Y_RES][0~2]   -> RGB values
      IMAGE[X_RES][Y_RES][3]     -> depth values
 
- 
+
      */

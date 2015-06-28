@@ -1,3 +1,7 @@
+/*
+Copyright (C) 2012 Hema Koppula
+*/
+
 #include <vector>
 #include <assert.h>
 //#include "Point2D.h"
@@ -35,7 +39,7 @@ public:
   }
 
   /* Given an image IMAGE and skeleton data, as well as sets of indices into the data and pos_data
-     arrays, and integers telling us how long the ori_inds and pos_inds arrays are, computes the 
+     arrays, and integers telling us how long the ori_inds and pos_inds arrays are, computes the
      bounding box around the set of joints specified. The corners array is then populated with
      the two points representing the corners of the bounding box. */
   void findBoundingBox(int ***IMAGE, double **data, double **pos_data, int *ori_inds, int num_ori_inds,
@@ -50,7 +54,7 @@ public:
     for (int i = 0; i < num_ori_inds+num_pos_inds; i++){
       joint_pos[i] = new int[2];
    }
-    
+
     // Compute the pixel values for each joint.
     for (int i = 0; i < num_ori_inds; i++)
     {
@@ -83,7 +87,7 @@ public:
 
       if (joint_pos[i][1] > maxY)
 	maxY = joint_pos[i][1];
-    } 
+    }
 
     // Populate the corners array with the bounding box corners.
     corners[0] = Point2D(minX, minY);
@@ -159,11 +163,11 @@ public:
 
   /* This function takes a HOG object and aggregates the HOG features for each stripe in the chunk.
      It populates aggHogVec with one HOGFeaturesOfBlock object for each stripe in the image. */
-  void computeAggHogBlock(HOG & hog, int numStripes, int minXBlock, int maxXBlock, int minYBlock, 
+  void computeAggHogBlock(HOG & hog, int numStripes, int minXBlock, int maxXBlock, int minYBlock,
 			  int maxYBlock, std::vector<HOGFeaturesOfBlock> & aggHogVec){
     // The number of blocks in a single column of blocks in one stripe in the image.
     double stripeSize = ((double)(maxYBlock - minYBlock)) / numStripes;
-    
+
     for (int n = 0; n < numStripes; n++)
       {
 	// For each stripe, create a new HOGFeaturesOfBlock vector hogvec and fill it with the HOGFeaturesOfBlocks
@@ -198,7 +202,7 @@ public:
     else if (bodyPart == RIGHTHAND) findRightHandBoundingBox(IMAGE, data, pos_data, corners);
     else if (bodyPart == FULLBODY) findFullBodyBoundingBox(IMAGE, data, pos_data, corners);
     else assert(false);
-    
+
     int minXBlock = (int)(corners[0].x / BLOCK_SIDE);
     int minYBlock = (int)(corners[0].y / BLOCK_SIDE);
     int maxXBlock = (int)(corners[1].x / BLOCK_SIDE);
@@ -230,7 +234,7 @@ public:
     }
     return feats;
   }
-  
+
   /* Take all the features in the vector aggHogVec, and compile them into a single double array. */
   vector<double> aggregateFeaturesIntoVector(std::vector<HOGFeaturesOfBlock> & aggHogVec, int numFeats){
     // First, iterate through and just count the number of features we'll need.
@@ -284,13 +288,13 @@ public:
   /* Compute the HOG features for the images in the bounding boxes of various body parts.
      Computes both image HOG featurs and depth HOG features.
      Return a pointer to a double array with those features, and popualte the numFeats
-     integer with the length of the returned doubled array. Note that the first half 
+     integer with the length of the returned doubled array. Note that the first half
      of the returned array is image features, while the second half is depth features. */
   vector<double> computeFeatures(int ***IMAGE, double **data, double **pos_data, int numFeats,
 			  bool useHead, bool useTorso, bool useLeftArm,
 			  bool useRightArm, bool useLeftHand, bool useRightHand,
 			  bool useFullBody, bool useImage, bool useDepth) {
-    
+
     int ***depthIMAGE;
     if (useDepth){
       depthIMAGE = new int**[width];
@@ -300,20 +304,20 @@ public:
 	  depthIMAGE[i][j] = new int[4];
 	}
       }
-      
+
       populateDepthImage(IMAGE, depthIMAGE, width, height);
     }
-    
+
     if (this->mirrored) mirrorData(IMAGE, width, height);
 
     HOG hog, depthHog;
-    
+
     if (useImage)
       hog.computeHOG(IMAGE, width, height);
 
     if (useDepth)
       depthHog.computeHOG(depthIMAGE, width, height);
-      
+
     std::vector<HOGFeaturesOfBlock> aggHogVec;
     if (useImage){
       if (useHead)
@@ -337,7 +341,7 @@ public:
       if (useFullBody)
 	computeBodyPartHOGFeatures(IMAGE, hog, data, pos_data, FULLBODY, aggHogVec);
     }
-    
+
     if (useDepth){
       if (useHead)
 	computeBodyPartHOGFeatures(depthIMAGE, depthHog, data, pos_data, HEAD, aggHogVec);
@@ -347,7 +351,7 @@ public:
 
       if (useLeftArm)
 	computeBodyPartHOGFeatures(depthIMAGE, depthHog, data, pos_data, LEFTARM, aggHogVec);
-      
+
       if (useRightArm)
 	computeBodyPartHOGFeatures(depthIMAGE, depthHog, data, pos_data, RIGHTARM, aggHogVec);
 
@@ -383,14 +387,14 @@ public:
         this->pRecFile=pRecFile;
         this->mirrored=mirrored;
     }
-    
+
     ~FeaturesSkelRGBD() {
-    
-    }    
+
+    }
 
 };
 
-/** 
+/**
 there are 11 joints that have both orientation (3x3) and position (x,y,z) data
         XN_SKEL_HEAD,
         XN_SKEL_NECK,
@@ -403,7 +407,7 @@ there are 11 joints that have both orientation (3x3) and position (x,y,z) data
         XN_SKEL_LEFT_KNEE,
         XN_SKEL_RIGHT_HIP,
         XN_SKEL_RIGHT_KNEE
-	
+
 there are 4 joints that have only position (x,y,z) data
         XN_SKEL_LEFT_HAND,
         XN_SKEL_RIGHT_HAND,
@@ -411,22 +415,22 @@ there are 4 joints that have only position (x,y,z) data
         XN_SKEL_RIGHT_FOOT
 
  data[][0~8]    -> orientation (3x3 matrix)
-                     3x3 matrix is stored as 
+                     3x3 matrix is stored as
                         0 1 2
                         3 4 5
                         6 7 8
-                     read PDF for description about 3x3 matrix 
+                     read PDF for description about 3x3 matrix
  data[][9~11]   -> x,y,z position for eleven joints
- 
- data_CONF[][0]   -> confidence value of orientation  (data[][0~8]) 
+
+ data_CONF[][0]   -> confidence value of orientation  (data[][0~8])
  data_CONF[][1]   -> confidence value of xyz position (data[][9~11])
- 
+
  data_pos[][0~2] -> x,y,z position for four joints
  data_pos_CONF[]  -> confidence value of xyz position (data_pos[][0~2])
- 
+
 X_RES and Y_RES are in constants.h, so just use them.
  IMAGE[X_RES][Y_RES][0~2]   -> RGB values
  IMAGE[X_RES][Y_RES][3]     -> depth values
 
- 
+
  */

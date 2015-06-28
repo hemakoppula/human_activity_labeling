@@ -1,10 +1,13 @@
+/*
+Copyright (C) 2012 Hema Koppula
+// originally obtained from http://people.cs.uchicago.edu/~pff/
+*/
+
 #include <math.h>
-//#include "mex.h"
 #include <stdlib.h>
 // small value, used to avoid division by zero
 #define eps 0.0001
 
-// originally obtained from http://people.cs.uchicago.edu/~pff/
 
 
 class Point2D
@@ -301,7 +304,7 @@ void process(const double *im, const int *dims) {
 	v = v2;
 	dx = dx2;
 	dy = dy2;
-      } 
+      }
       if (v3 > v) {
 	v = v3;
 	dx = dx3;

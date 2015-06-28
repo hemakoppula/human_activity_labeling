@@ -1,3 +1,7 @@
+/*
+Copyright (C) 2012 Hema Koppula
+*/
+
 /**
 1~40: current frame
 41~436: against old frame (up to -65)
@@ -10,7 +14,7 @@
 
 bool DEBUG_numFeature = false; // turn on to print out how many features are being recorded
 
-int percentile[] = {10, 90}; //{10, 50, 90};    
+int percentile[] = {10, 90}; //{10, 50, 90};
 bool HEAD_AGAINST_MID_HEAP = true;
 
 bool FOOT_AGAINST_HEAD = false; // keep it false; FOOT against Torso is being done by default
@@ -28,11 +32,11 @@ private:
     bool frameComparable;
     bool mirrored;
     std::vector<double> featureValues;
-    
+
     char* curFileName;
     //FILE * pRecFile;
     bool ready;
-    
+
     void init(bool mirrored) {
     //void init(char* curFileNum, FILE* pRecFile_temp, bool mirrored) {
         //curFileName = curFileNum;
@@ -43,7 +47,7 @@ private:
         this->mirrored = mirrored;
 
         //init prevFrame
-        prevFrame = new double**[frameStoreNum]; 
+        prevFrame = new double**[frameStoreNum];
         for (int i=0;i<frameStoreNum;i++) {
             prevFrame[i] = new double*[JOINT_NUM];
             for (int j=0;j<JOINT_NUM;j++) {
@@ -59,9 +63,9 @@ private:
                 prevFrame_posOnly[i][j] = new double[POS_JOINT_DATA_NUM];
             }
         }
-        
+
     } // end init
-    
+
     int findFrame(int diff) {
         //return ((currentFramePointer + diff) % frameStoreNum);
         int a = (currentFramePointer + diff);
@@ -77,21 +81,21 @@ private:
         double handx = hand_pos[0] - head_pos[0];
         double handy = hand_pos[1] - head_pos[1];
         double handz = hand_pos[2] - head_pos[2];
-        
+
         double* rel_hand = new double[3];
-        
+
         rel_hand[0] = (head_ori[0]*handx + head_ori[3]*handy + head_ori[6]*handz) / 1000;
         rel_hand[1] = (head_ori[1]*handx + head_ori[4]*handy + head_ori[7]*handz) / 1000;
         rel_hand[2] = (head_ori[2]*handx + head_ori[5]*handy + head_ori[8]*handz) / 1000;
-        
+
         //printf("%.2f \t%.2f \t%.2f\n", rel_hand[0], rel_hand[1], rel_hand[2]);
-        
+
         return rel_hand;
     }
 
     int computeFootPosition(double **data, double **pos_data, int variableNum) {
         //double data[JOINT_NUM][JOINT_DATA_NUM], double pos_data[POS_JOINT_NUM][POS_JOINT_DATA_NUM], int variableNum) {
-        
+
         // compute foot loc
         double left_foot_pos[3];
         double right_foot_pos[3];
@@ -118,7 +122,7 @@ private:
         for (int i=0;i<3;i++) {
             right_foot_pos[i]=pos_data[POS_RIGHT_FOOT_NUM][i];
         }
-        
+
         double* left_foot;
         if (FOOT_AGAINST_HEAD) {
             left_foot = computeLocalHandLoc(head_ori, head_pos, left_foot_pos);
@@ -133,9 +137,9 @@ private:
           //  fprintf(pRecFile, "%.7f,", left_foot[i]);
             featureValues.push_back(left_foot[i]);
             variableNum++;
-        } 
-        
-        
+        }
+
+
         double* right_foot;
         if (FOOT_AGAINST_HEAD) {
             right_foot = computeLocalHandLoc(head_ori, head_pos, right_foot_pos);
@@ -153,14 +157,14 @@ private:
         }
 
         if (DEBUG_numFeature) printf("foot: %d\n", variableNum);
-        
+
         return variableNum;
-    } // end computeFootPosition    
+    } // end computeFootPosition
 
 
     int computeHandPosition(double **data, double **pos_data, int variableNum) {
         //double data[JOINT_NUM][JOINT_DATA_NUM], double pos_data[POS_JOINT_NUM][POS_JOINT_DATA_NUM], int variableNum) {
-        
+
         // compute hand loc
         double left_hand_pos[3];
         double right_hand_pos[3];
@@ -187,8 +191,8 @@ private:
         for (int i=0;i<3;i++) {
             right_hand_pos[i]=pos_data[POS_RIGHT_HAND_NUM][i];
         }
-        
-        
+
+
         double* left_hand = computeLocalHandLoc(head_ori, head_pos, left_hand_pos);
         for (int i=0;i<3;i++) {
            // fprintf(pRecFile, "%.7f,",left_hand[i]);
@@ -200,7 +204,7 @@ private:
           //  fprintf(pRecFile, "%.7f,", left_hand[i]);
             featureValues.push_back(left_hand[i]);
             variableNum++;
-        } 
+        }
 
         double* right_hand = computeLocalHandLoc(head_ori, head_pos, right_hand_pos);
         for (int i=0;i<3;i++) {
@@ -215,7 +219,7 @@ private:
             variableNum++;
         }
         if (DEBUG_numFeature) printf("hand: %d\n", variableNum);
-           
+
         // Maybe try collecting hand motion.
         if (USE_HAND_MOTION) {
             double left_hand_pos_prev[3];
@@ -252,7 +256,7 @@ private:
 
     int computeMoreHandFeatures(int variableNum) {
         //double data[JOINT_NUM][JOINT_DATA_NUM], double pos_data[POS_JOINT_NUM][POS_JOINT_DATA_NUM], int variableNum) {
-        
+
         // compute hand loc
         double left_hand_pos[3];
         double right_hand_pos[3];
@@ -284,7 +288,7 @@ private:
             for (int i=0;i<3;i++) {
                 right_hand_pos[i]=prevFrame_posOnly[frameN][POS_RIGHT_HAND_NUM][i];
             }
-            
+
             double* left_hand = computeLocalHandLoc(head_ori, head_pos, left_hand_pos);
             lhand.push_back(left_hand[2]);
 
@@ -296,7 +300,7 @@ private:
             }
             cout << endl;*/
         }
-        
+
         sort(lhand.begin(), lhand.end());
         sort(rhand.begin(), rhand.end());
 
@@ -305,13 +309,13 @@ private:
         for (int i=0;i<sizeof(percentile)/sizeof(percentile[0]);i++) {
             int temp = numValue * percentile[i] / 100;
            // fprintf(pRecFile, "%.1f,%.1f,", lhand[temp], rhand[temp]);
-            
+
             featureValues.push_back(lhand[temp]);
             featureValues.push_back(rhand[temp]);
-            
+
             variableNum += 2;
             //cout << i << " " << temp << " "  << numValue << " " << latest <<  " " << lhand[temp] << " " << rhand[temp] << endl;
-            if (DEBUG_numFeature) printf("hand location (percentile: %d): %d\n", percentile[i], variableNum);            
+            if (DEBUG_numFeature) printf("hand location (percentile: %d): %d\n", percentile[i], variableNum);
         }
 
         if (USE_BIGGEST_UPDOWN_HAND_MOVE) {
@@ -323,9 +327,9 @@ private:
             featureValues.push_back(moveL);
             featureValues.push_back(moveR);
             variableNum += 2;
-            if (DEBUG_numFeature) printf("hand biggest move (up/down): %d\n", variableNum);            
+            if (DEBUG_numFeature) printf("hand biggest move (up/down): %d\n", variableNum);
         }
-        
+
         if (DEBUG_numFeature) printf("extra hand features (percentile+move): %d\n", variableNum);
         return variableNum;
     } // end computeMoreHandFeatures
@@ -334,7 +338,7 @@ private:
         //double data[JOINT_NUM][JOINT_DATA_NUM], double pos_data[POS_JOINT_NUM][POS_JOINT_DATA_NUM], int variableNum) {
 
         int curFrame = findFrame(0);
-        
+
         // compute hand loc
         double heap_pos[3];
         double head_pos[3];
@@ -358,14 +362,14 @@ private:
             if (i==1) { // y val
                 head_up[i] = head_pos[i];
             }
-            
+
             if (i!=1) { // except y val
                 he_fs += (head_pos[i]*head_pos[i]);
                 hp_fs += (heap_pos[i]*heap_pos[i]);
             }
             //printf("%d: head: %.1f heap: %.1f up: %.1f\n", i+1, head_pos[i], heap_pos[i], head_up[i]);
         }
-        
+
         double v1[3]; // heap to head
         double v2[3]; // heap to up
         double v1_det = 0;
@@ -386,42 +390,42 @@ private:
         double ang = acos(dot / (v1_det * v2_det));
 
         ang = ang * 180 / 3.14159265; // to degree
-        
+
         if (he_fs > hp_fs) { // if heap is closer
             ang = -ang;
         }
-        
+
         if (ang>80) {
         //    printf("computeHead angle not right.. %.1f \n", ang); exit(1);
         }
-        
+
       //  fprintf(pRecFile, "%.1f,", ang);
         featureValues.push_back(ang);
         variableNum++;
-        
+
 
         /*double* headLoc = computeLocalHandLoc(head_ori, head_pos, heap_pos);
         for (int i=0;i<3;i++) {
             fprintf(pRecFile, "%.7f,", headLoc[i]);
             variableNum++;
         }*/
-        
+
         if (DEBUG_numFeature) printf("HEAD angle feature: %d\n", variableNum);
         return variableNum;
     } // end computeHead
-    
-    int computeBodyPoseAndMotionInfo(double **data, double **pos_data, int variableNum) { 
+
+    int computeBodyPoseAndMotionInfo(double **data, double **pos_data, int variableNum) {
         //double data[JOINT_NUM][JOINT_DATA_NUM], double pos_data[POS_JOINT_NUM][POS_JOINT_DATA_NUM], int variableNum) {
         for (int i=0; i<compareFrameNum; i++) {
             for (int j=0; j<JOINT_NUM; j++) {
 
                 int frameCompareTo = findFrame(compareFrame[i]);
-                
+
                 if (currentFramePointer == frameCompareTo) {
                     if (j != TORSO_JOINT_NUM) {
                         // rot mat
                         double m[3][3];
-                       
+
                         for (int k =0;k<3;k++) {
                             m[0][k]=  prevFrame[currentFramePointer][TORSO_JOINT_NUM][0]*prevFrame[currentFramePointer][j][0+k]
                                     + prevFrame[currentFramePointer][TORSO_JOINT_NUM][3]*prevFrame[currentFramePointer][j][3+k]
@@ -432,21 +436,21 @@ private:
                             m[2][k]=  prevFrame[currentFramePointer][TORSO_JOINT_NUM][2]*prevFrame[currentFramePointer][j][0+k]
                                     + prevFrame[currentFramePointer][TORSO_JOINT_NUM][5]*prevFrame[currentFramePointer][j][3+k]
                                     + prevFrame[currentFramePointer][TORSO_JOINT_NUM][8]*prevFrame[currentFramePointer][j][6+k];
-                                    
+
                             /*printf("%.10f %.10f %.10f %.10f\n",  prevFrame[currentFramePointer][TORSO_JOINT_NUM][0]*prevFrame[currentFramePointer][j][0+k]
                                     , prevFrame[currentFramePointer][TORSO_JOINT_NUM][3]*prevFrame[currentFramePointer][j][3+k]
                                     , prevFrame[currentFramePointer][TORSO_JOINT_NUM][6]*prevFrame[currentFramePointer][j][6+k], m[0][k]);*/
                         }
-                        /*for (int ii = 0;ii<3;ii++) 
-                            for(int jj=0;jj<3;jj++) 
+                        /*for (int ii = 0;ii<3;ii++)
+                            for(int jj=0;jj<3;jj++)
                                 printf("%d %d %d %.10f\n",frameCompareTo, ii,jj,m[ii][jj]); */
                         // quat
                         double q1 = 1.0/2.0 * sqrt(1 + m[0][0] - m[1][1] - m[2][2]);
                         double q2 = 1.0/(4.0*q1) * (m[0][1] + m[1][0]);
                         double q3 = 1.0/(4.0*q1) * (m[0][2] + m[2][0]);
                         double q4 = 1.0/(4.0*q1) * (m[2][1] - m[1][2]);
-                        
-                        if (!isnan(q1) && !isnan(q2) && !isnan(q3) && !isnan(q4) 
+
+                        if (!isnan(q1) && !isnan(q2) && !isnan(q3) && !isnan(q4)
                                 && !isinf(q1) && !isinf(q2) && !isinf(q3) && !isinf(q4)) {
                         //    fprintf(pRecFile, "%.7f,%.7f,%.7f,%.7f,",q1,q2,q3,q4);
                             featureValues.push_back(q1);
@@ -476,18 +480,18 @@ private:
                                 + prevFrame[frameCompareTo][j][5]*prevFrame[currentFramePointer][j][3+k]
                                 + prevFrame[frameCompareTo][j][8]*prevFrame[currentFramePointer][j][6+k];
                     }
-                    
-                   /*for (int ii = 0;ii<3;ii++) 
-                        for(int jj=0;jj<3;jj++) 
+
+                   /*for (int ii = 0;ii<3;ii++)
+                        for(int jj=0;jj<3;jj++)
                             printf("%d %d %d %.10f\n",frameCompareTo, ii,jj,m[ii][jj]); */
-                    
+
                     // quat
                     double q1 = 1.0/2.0 * sqrt(1 + m[0][0] - m[1][1] - m[2][2]);
                     double q2 = 1.0/(4.0*q1) * (m[0][1] + m[1][0]);
                     double q3 = 1.0/(4.0*q1) * (m[0][2] + m[2][0]);
                     double q4 = 1.0/(4.0*q1) * (m[2][1] - m[1][2]);
-                    
-                        if (!isnan(q1) && !isnan(q2) && !isnan(q3) && !isnan(q4) 
+
+                        if (!isnan(q1) && !isnan(q2) && !isnan(q3) && !isnan(q4)
                                 &&!isinf(q1) && !isinf(q2) && !isinf(q3) && !isinf(q4)) {
                        // fprintf(pRecFile, "%.7f,%.7f,%.7f,%.7f,",q1,q2,q3,q4);
                         featureValues.push_back(q1);
@@ -500,26 +504,26 @@ private:
                         for(int num = 0; num < 4; num++)
                                 featureValues.push_back(zero);
                     }
-                            
-                            
+
+
                     variableNum+=4;
-                    if(DEBUG_numFeature) printf("comparing against frame : %d (against:%d)\n", variableNum, compareFrame[i]);   
+                    if(DEBUG_numFeature) printf("comparing against frame : %d (against:%d)\n", variableNum, compareFrame[i]);
                 }
-                
+
             } // end j
         } // end i
-        
+
         return variableNum;
     } // end computeBodyPoseAndMotionInfo
 
 
-   
-    bool processData(double **data, double **pos_data) { 
+
+    bool processData(double **data, double **pos_data) {
         //double data[JOINT_NUM][JOINT_DATA_NUM], double pos_data[POS_JOINT_NUM][POS_JOINT_DATA_NUM]) {
         featureValues.clear();
         // advance one frame
         currentFramePointer=findFrame(1);
-        
+
         // store current data
         for (int i=0;i<JOINT_NUM;i++) {
             for (int j=0;j<JOINT_DATA_NUM;j++) {
@@ -527,12 +531,12 @@ private:
             }
         }
 
-        for (int i=0;i<POS_JOINT_NUM;i++) {        
+        for (int i=0;i<POS_JOINT_NUM;i++) {
             for (int j=0;j<POS_JOINT_DATA_NUM;j++) {
                 prevFrame_posOnly[currentFramePointer][i][j] = pos_data[i][j];
             }
         }
-        
+
         // compute diff
         if (currentFramePointer >= (frameStoreNum-1)) {
             frameComparable = true;
@@ -545,7 +549,7 @@ private:
         } else {
             int variableNum = 0;
 
-            // each row starts with fileName            
+            // each row starts with fileName
             // add L or M at the beginning to tell it is label (helps reading from matlab)
            /* if (!mirrored) {
                 fprintf(pRecFile, "L%s,", curFileName);
@@ -553,10 +557,10 @@ private:
                 fprintf(pRecFile, "M%s,", curFileName);
             }*/
             //fprintf(pRecFile, "%d,", currentFramePointer);
-            
+
             // feature 1 & 3 of AAAI paper
             variableNum = computeBodyPoseAndMotionInfo(data,pos_data,variableNum);
-            
+
             // feature 2 of AAAI paper + some extra Hand motion (hand motion fails)
             variableNum = computeHandPosition(data,pos_data,variableNum);
 
@@ -573,7 +577,7 @@ private:
             if(DEBUG_numFeature) {
                 printf("\t\tfeatures: %d\n", variableNum);
             }
-            return true;            
+            return true;
         }
         return false;
     }
@@ -582,12 +586,12 @@ public:
     std::vector<double> getFeatureValues(){
         return featureValues;
     }
-        bool addData(double **data, double **pos_data) { 
+        bool addData(double **data, double **pos_data) {
         //double data[JOINT_NUM][JOINT_DATA_NUM], double pos_data[POS_JOINT_NUM][POS_JOINT_DATA_NUM]) {
-        
+
         // advance one frame
         currentFramePointer=findFrame(1);
-        
+
         // store current data
         for (int i=0;i<JOINT_NUM;i++) {
             for (int j=0;j<JOINT_DATA_NUM;j++) {
@@ -595,7 +599,7 @@ public:
             }
         }
 
-        for (int i=0;i<POS_JOINT_NUM;i++) {        
+        for (int i=0;i<POS_JOINT_NUM;i++) {
             for (int j=0;j<POS_JOINT_DATA_NUM;j++) {
                 prevFrame_posOnly[currentFramePointer][i][j] = pos_data[i][j];
             }
@@ -604,16 +608,16 @@ public:
             frameComparable = true;
         }
     }
-    
+
     // return true if feature extraction started and successful..
-    bool extractSkeletonFeature(double **data, double **pos_data) { 
+    bool extractSkeletonFeature(double **data, double **pos_data) {
                             //double data[JOINT_NUM][JOINT_DATA_NUM],
                               //   double pos_data[POS_JOINT_NUM][POS_JOINT_DATA_NUM]) {
         if (ready) {
             return processData(data, pos_data);
-    
+
         } else {
-            printf("ERROR! feature extraction not ready.\n");            
+            printf("ERROR! feature extraction not ready.\n");
             exit(1);
         }
         return false;
@@ -625,22 +629,22 @@ public:
     FeaturesSkel() {
         ready = false;
     }
-    
+
    // FeaturesSkel(char* curFileNum, FILE* pRecFile_temp, bool mirrored) {
     //    init(curFileNum, pRecFile_temp, mirrored);
     //}
     FeaturesSkel(bool mirrored) {
         init(mirrored);
     }
-    
+
     ~FeaturesSkel() {
-        delete prevFrame;  
-    }    
+        delete prevFrame;
+    }
 
 };
 
 
-/** 
+/**
 there are 11 joints that have both orientation (3x3) and position (x,y,z) data
 		XN_SKEL_HEAD,
         XN_SKEL_NECK,
@@ -653,7 +657,7 @@ there are 11 joints that have both orientation (3x3) and position (x,y,z) data
         XN_SKEL_LEFT_KNEE,
         XN_SKEL_RIGHT_HIP,
         XN_SKEL_RIGHT_KNEE
-	
+
 there are 4 joints that have only position (x,y,z) data
         XN_SKEL_LEFT_HAND,
         XN_SKEL_RIGHT_HAND,
@@ -661,19 +665,19 @@ there are 4 joints that have only position (x,y,z) data
         XN_SKEL_RIGHT_FOOT
 
  data[][0~8]    -> orientation (3x3 matrix)
-                     3x3 matrix is stored as 
+                     3x3 matrix is stored as
                         0 1 2
                         3 4 5
                         6 7 8
-                     read PDF for description about 3x3 matrix 
+                     read PDF for description about 3x3 matrix
  data[][9~11]   -> x,y,z position for eleven joints
- 
- data_CONF[][0]   -> confidence value of orientation  (data[][0~8]) 
+
+ data_CONF[][0]   -> confidence value of orientation  (data[][0~8])
  data_CONF[][1]   -> confidence value of xyz position (data[][9~11])
- 
+
  data_pos[][0~2] -> x,y,z position for four joints
  data_pos_CONF[]  -> confidence value of xyz position (data_pos[][0~2])
- 
+
  IMAGE[X_RES][Y_RES][0~2]   -> RGB values
  IMAGE[X_RES][Y_RES][3]     -> depth values
 
