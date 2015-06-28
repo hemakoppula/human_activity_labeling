@@ -12,8 +12,10 @@
 #include <cmath>
 #include <dirent.h>
 #include "constants.h"
-#include <opencv/cv.h>
-#include <opencv/highgui.h>
+//#include <opencv/cv.h>
+//#include <opencv/highgui.h>
+#include <opencv2/opencv.hpp>
+
 
 //#include "Point2D.h"
 //#include "HOGFeaturesOfBlock.h"
@@ -350,7 +352,7 @@ int main(int argc, char** argv) {
             bool mirrored = (j == 0) ? false : true;
             bool skipOdd = false;
             const string transformfile = dataLocation + all_files[i] + "_globalTransform.txt";
-            readData* DATA = new readData(dataLocation, all_files[i], data_act_map, i + 1, mirrored, mirrored_dataLocation, skipOdd, fileList, objPCFileList);
+            readData* DATA = new readData(dataLocation, all_files[i], data_act_map, i + 1, mirrored, mirrored_dataLocation, skipOdd, fileList, objPCFileList, true);
             int status = DATA->readNextFrame(data, pos_data, data_CONF, pos_data_CONF, IMAGE, objData, objPCInds);
             FeaturesMultiFrame fmf(true);
             vector<Frame> segment;

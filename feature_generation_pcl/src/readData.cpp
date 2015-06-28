@@ -235,6 +235,25 @@ private:
         }
     }
 
+    bool skipNextLine_ObjectData() {
+    	string line;
+    	bool file_ended = true;
+        for (size_t i = 0; i < file_objFeat.size(); i++) {
+
+        if (getline(*file_objFeat.at(i), line)) {
+            file_ended = false;
+
+
+
+        }
+
+
+
+        }
+        return !file_ended;
+
+    }
+
     bool readNextLine_ObjectData(vector < vector<double> > &objFeats) {
         objFeats.clear();
         objFeats.resize(file_objFeat.size());
@@ -282,6 +301,21 @@ private:
         return true;
     }
     
+    bool skipNextLine_ObjectPCData() {
+        	string line;
+        	bool file_ended = true;
+        	for (size_t i = 0; i < file_objPC.size(); i++) {
+
+        		if (getline(*file_objPC.at(i), line)) {
+                file_ended = false;
+
+            }
+
+            }
+            return !file_ended;
+
+        }
+
     bool readNextLine_ObjectPCData(vector < vector<int> > &objPCIndices) {
         objPCIndices.clear();
         objPCIndices.resize(file_objPC.size());
@@ -345,8 +379,6 @@ private:
     }
 
     // return true if data retrieving was successful
-
-
 
     bool readNextLine_RGBD_c(int ***IMAGE) {
         string line;
@@ -606,10 +638,7 @@ public:
         prepareRGBDData();
         prepareObjectData();
 
-
     }
-
-
 
 
     readData(string dataLoc, string fileN, map<string, string> d_a_map, int i, bool mirrored, string dataLoc_mirrored, bool skip, vector<string> objectFeatureFiles, vector<string> objectPCFiles, bool compressed = false )
@@ -651,12 +680,12 @@ public:
 
     }
 
-    readData(string dataLoc, string fileN) {
+    readData(string dataLoc, string fileN, bool compressed = false) {
         dataLocation = dataLoc;
         fileName = fileN;
         skipOdd = false;
         this->mirrored = false; //this was previously unitialized
-        this->compressed = false;
+        this->compressed = compressed;
         prepareSkeletonData();
         prepareRGBDData();
     }
@@ -724,6 +753,9 @@ public:
         } else {
             printf("\t\ttotal number of frames = %d\n", lastFrame);
         }
+        bool status_obj = skipNextLine_ObjectData();
+        bool status_objPC = skipNextLine_ObjectPCData();
+
         if (status_RGBD)
             return currentFrameNum;
         else
