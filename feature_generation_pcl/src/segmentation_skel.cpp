@@ -17,7 +17,6 @@ Copyright (C) 2012 Hema Koppula
 
 using namespace std;
 
-
 class Segmentation_skel {
  private:
   vector<FrameSkel> skeletons;
