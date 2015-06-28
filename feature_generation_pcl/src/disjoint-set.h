@@ -16,8 +16,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 */
 
-#ifndef DISJOINT_SET
-#define DISJOINT_SET
+#ifndef FEATURE_GENERATION_PCL_SRC_DISJOINT_SET_H_
+#define FEATURE_GENERATION_PCL_SRC_DISJOINT_SET_H_
 
 // disjoint-set forests using union-by-rank and path compression (sort of).
 
@@ -28,15 +28,15 @@ typedef struct {
 } uni_elt;
 
 class universe {
-public:
-  universe(int elements);
+ public:
+  explicit universe(int elements);
   ~universe();
-  int find(int x);  
+  int find(int x);
   void join(int x, int y);
   int size(int x) const { return elts[x].size; }
   int num_sets() const { return num; }
 
-private:
+ private:
   uni_elt *elts;
   int num;
 };
@@ -50,7 +50,7 @@ universe::universe(int elements) {
     elts[i].p = i;
   }
 }
-  
+
 universe::~universe() {
   delete [] elts;
 }
@@ -76,4 +76,4 @@ void universe::join(int x, int y) {
   num--;
 }
 
-#endif
+#endif  // FEATURE_GENERATION_PCL_SRC_DISJOINT_SET_H_
