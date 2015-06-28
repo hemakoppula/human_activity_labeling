@@ -7,6 +7,11 @@ add_definitions(${PCL_DEFINITIONS})
 
 set(CMAKE_BUILD_TYPE Debug)
 
+
+
+FIND_PACKAGE(OpenCV REQUIRED)
+
+
 add_executable (segment src/get_skel_segments.cpp)
 add_executable (extractOPC src/extractObjectPointclouds.cpp)
 add_executable (featgenSeg src/featureGenerationForSegments.cpp)
@@ -15,13 +20,10 @@ add_executable (skelViewer src/skeletonViewer.cpp)
 add_executable (getTraj src/getObjHandTrajectories.cpp)
 
 
-FIND_PACKAGE( OpenCV REQUIRED )
-
 TARGET_LINK_LIBRARIES(segment ${PCL_LIBRARIES})
 TARGET_LINK_LIBRARIES(extractOPC ${PCL_LIBRARIES} ${OpenCV_LIBS})
 TARGET_LINK_LIBRARIES(featgenSeg ${PCL_LIBRARIES} ${OpenCV_LIBS})
 TARGET_LINK_LIBRARIES(frameFeatgen ${PCL_LIBRARIES} ${OpenCV_LIBS})
 TARGET_LINK_LIBRARIES(skelViewer ${PCL_LIBRARIES})
-TARGET_LINK_LIBRARIES(getTraj ${PCL_LIBRARIES} ${OpenCV_LIBS} )
-
+TARGET_LINK_LIBRARIES(getTraj ${PCL_LIBRARIES} ${OpenCV_LIBS})
 #TARGET_LINK_LIBRARIES(segment ${PCL_LIBRARIES}  ${OpenCV_LIBS})

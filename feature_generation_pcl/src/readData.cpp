@@ -80,8 +80,8 @@ class readData {
       fileName_skeleton = dataLocation_mirrored + fileName + ".txt";
     }
     printf("Trying to open %s\n",
-            reinterpret_cast<char*> fileName_skeleton.c_str());
-    file = new ifstream(reinterpret_cast<char*> fileName_skeleton.c_str(),
+            (char*)fileName_skeleton.c_str());
+    file = new ifstream((char*) fileName_skeleton.c_str(),
                         ifstream::in);
     currentFrameNum = -99;
   }
@@ -101,7 +101,7 @@ class readData {
       stringstream lineStream(line);
       string element;
       parseChk(getline(lineStream, element, ','), true);
-      currentFrameNum = atoi(reinterpret_cast<char*> element.c_str());
+      currentFrameNum = atoi((char*) element.c_str());
       //cout << "skipping frame " << currentFrameNum << " from skeleton data" << endl;
       if (element.compare("END") == 0) {
         file_ended = true;
@@ -124,7 +124,7 @@ class readData {
         stringstream lineStream(line);
         string element;
         parseChk(getline(lineStream, element, ','), true);
-        currentFrameNum = atoi(reinterpret_cast<char*> element.c_str());
+        currentFrameNum = atoi((char*) element.c_str());
         if (element.compare("END") == 0) {
           file_ended = true;
           return false;
@@ -133,61 +133,61 @@ class readData {
     }
 
     if (getline(*file, line)) {
-        file_ended = false;
-        stringstream lineStream(line);
-        string element;
+      file_ended = false;
+      stringstream lineStream(line);
+      string element;
 
-        int jointCount = 0;
-        int joint_dataCount = 0;
+      int jointCount = 0;
+      int joint_dataCount = 0;
 
-        int pos_jointCount = 0;
-        int pos_joint_dataCount = 0;
+      int pos_jointCount = 0;
+      int pos_joint_dataCount = 0;
 
-        parseChk(getline(lineStream, element, ','), true);
-        currentFrameNum = atoi(reinterpret_cast<char*> element.c_str());
+      parseChk(getline(lineStream, element, ','), true);
+      currentFrameNum = atoi((char*) element.c_str());
 
-        if (element.compare("END") == 0) {
-            file_ended = true;
-            return false;
-        }
+      if (element.compare("END") == 0) {
+        file_ended = true;
+        return false;
+      }
 
-        while (getline(lineStream, element, ',')) {
-            double e = strtod(reinterpret_cast<char*> element.c_str(), NULL);
+      while (getline(lineStream, element, ',')) {
+          double e = strtod((char*) element.c_str(), NULL);
 
-            if (jointCount < JOINT_NUM) {
-                data[jointCount][joint_dataCount] = e;
-                joint_dataCount++;
+          if (jointCount < JOINT_NUM) {
+            data[jointCount][joint_dataCount] = e;
+            joint_dataCount++;
 
-                if (joint_dataCount == JOINT_DATA_ORI_NUM) {
-                    parseChk(getline(lineStream, element, ','), true); // ori conf value
-                    data_CONF[jointCount][0] = atoi(reinterpret_cast<char*> element.c_str());
-                } else if (joint_dataCount >= JOINT_DATA_NUM) {
-                    parseChk(getline(lineStream, element, ','), true); // pos conf value
-                    data_CONF[jointCount][1] = atoi(reinterpret_cast<char*> element.c_str());
-                    jointCount++;
-                    joint_dataCount = 0;
-                }
-
-            } else {
-                // pos only joints
-                if (pos_jointCount >= POS_JOINT_NUM) {
-                    errorMsg("PARSING ERROR!!!!!");
-                }
-                pos_data[pos_jointCount][pos_joint_dataCount] = e;
-                pos_joint_dataCount++;
-                if (pos_joint_dataCount >= POS_JOINT_DATA_NUM) {
-                    parseChk(getline(lineStream, element, ','), true); // pos conf value
-                    data_pos_CONF[pos_jointCount] = atoi(reinterpret_cast<char*> element.c_str());
-
-                    pos_jointCount++;
-                    pos_joint_dataCount = 0;
-                }
+            if (joint_dataCount == JOINT_DATA_ORI_NUM) {
+              parseChk(getline(lineStream, element, ','), true); // ori conf value
+              data_CONF[jointCount][0] = atoi((char*) element.c_str());
+            } else if (joint_dataCount >= JOINT_DATA_NUM) {
+              parseChk(getline(lineStream, element, ','), true); // pos conf value
+              data_CONF[jointCount][1] = atoi((char*) element.c_str());
+              jointCount++;
+              joint_dataCount = 0;
             }
+
+          } else {
+            // pos only joints
+            if (pos_jointCount >= POS_JOINT_NUM) {
+                errorMsg("PARSING ERROR!!!!!");
+            }
+            pos_data[pos_jointCount][pos_joint_dataCount] = e;
+            pos_joint_dataCount++;
+            if (pos_joint_dataCount >= POS_JOINT_DATA_NUM) {
+                parseChk(getline(lineStream, element, ','), true); // pos conf value
+                data_pos_CONF[pos_jointCount] = atoi((char*)element.c_str());
+
+                pos_jointCount++;
+                pos_joint_dataCount = 0;
+            }
+          }
         }
 
         // check if there is more data in current frame..
         if (getline(lineStream, element, ',')) {
-            errorMsg("more data exist in skeleton data ..\n");
+          errorMsg("more data exist in skeleton data ..\n");
         }
     }
     if (currentFrameNum == -99) {
@@ -200,13 +200,13 @@ class readData {
       file_objFeat.resize(objectFeatureFileList.size());
       for (size_t i = 0; i < objectFeatureFileList.size(); i++) {
           cout << "\tOpening Object feature file " << i << endl;
-          file_objFeat.at(i) = new ifstream(reinterpret_cast<char*> objectFeatureFileList.at(i).c_str(), ifstream::in);
+          file_objFeat.at(i) = new ifstream((char*) objectFeatureFileList.at(i).c_str(), ifstream::in);
       }
       if (objectPCFileList.size() > 0) {
           file_objPC.resize(objectPCFileList.size());
           for (size_t i = 0; i < objectPCFileList.size(); i++) {
               cout << "\tOpening Object pc file " << i << ": " << objectPCFileList.at(i).c_str() << endl;
-              file_objPC.at(i) = new ifstream(reinterpret_cast<char*> objectPCFileList.at(i).c_str(), ifstream::in);
+              file_objPC.at(i) = new ifstream((char*) objectPCFileList.at(i).c_str(), ifstream::in);
           }
       }
       currentFrameNum_Obj = -99;
@@ -236,7 +236,7 @@ class readData {
           if (getline(*file_objFeat.at(i), line)) {
               file_ended = false;
 
-              line_c = reinterpret_cast<char*> line.c_str();
+              line_c = (char*) line.c_str();
               char* element = strtok(line_c, ",");
               if (element == NULL || strcmp(element, "END") == 0) {
                   file_ended = true;
@@ -283,7 +283,7 @@ class readData {
           if (getline(*file_objPC.at(i), line)) {
               file_ended = false;
 
-              line_c = reinterpret_cast<char*> line.c_str();
+              line_c = (char*) line.c_str();
               char* element = strtok(line_c, ",");
               if (element == NULL || strcmp(element, "END") == 0) {
                   file_ended = true;
@@ -318,13 +318,13 @@ class readData {
   void prepareRGBDData() {
   	if (compressed){
           fileName_RGBD = dataLocation + fileName + "_rgbd.txt.gz";
-          //printf("\tOpening \"%s\" (%s)\n", reinterpret_cast<char*> fileName_RGBD.c_str(), reinterpret_cast<char*> curActivity.c_str());
+          //printf("\tOpening \"%s\" (%s)\n", (char*) fileName_RGBD.c_str(), (char*) curActivity.c_str());
           file_RGBD = new ifstream( fileName_RGBD.c_str(), ios_base::in | ios_base::binary);
       in_RGBD.push(boost::iostreams::gzip_decompressor());
       in_RGBD.push(*file_RGBD);
   	}else{
   		fileName_RGBD = dataLocation + fileName + "_rgbd.txt";
-  		file_RGBD = new ifstream(reinterpret_cast<char*> fileName_RGBD.c_str(), ifstream::in);
+  		file_RGBD = new ifstream((char*) fileName_RGBD.c_str(), ifstream::in);
   	}
       currentFrameNum = -99;
   }
@@ -346,7 +346,7 @@ class readData {
     if (skipOdd) {
       if (getline(in_RGBD, line)) {
         file_ended = false;
-        line_c = reinterpret_cast<char*> line.c_str();
+        line_c = (char*) line.c_str();
         char* element = strtok(line_c, ",");
         if (element == NULL || strcmp(element, "END") == 0) {
           file_ended = true;
@@ -357,7 +357,7 @@ class readData {
 
     if (getline(in_RGBD, line)) {
       file_ended = false;
-      line_c = reinterpret_cast<char*> line.c_str();
+      line_c = (char*) line.c_str();
       char* element = strtok(line_c, ",");
       if (element == NULL || strcmp(element, "END") == 0) {
         file_ended = true;
@@ -366,8 +366,7 @@ class readData {
       currentFrameNum_RGBD = atoi(element);
       if (currentFrameNum != currentFrameNum_RGBD) {
         printf("skeleton: %d rgbd: %d\n", currentFrameNum, currentFrameNum_RGBD);
-        errorMsg("FRAME NUMBER BETWEEN SKELETON AND RGBD DOES NOT MATCH!!!!!!!!!
-                  (READING RGBD)");
+        errorMsg("FRAME NUMBER BETWEEN SKELETON AND RGBD DOES NOT MATCH!!!!!!!!! (READING RGBD)");
       }
       for (int y = 0; y < Y_RES; y++) {
         for (int x = 0; x < X_RES; x++) {
@@ -398,115 +397,98 @@ class readData {
   }
 
   bool readNextLine_RGBD(int ***IMAGE) {
-         string line;
-         char* line_c;
-         bool file_ended = true;
+    string line;
+    char* line_c;
+    bool file_ended = true;
 
-         if (skipOdd) {
-             if (getline(*file_RGBD, line)) {
-                 file_ended = false;
+    if (skipOdd) {
+      if (getline(*file_RGBD, line)) {
+        file_ended = false;
 
-                 line_c = reinterpret_cast<char*> line.c_str();
-                 char* element = strtok(line_c, ",");
-                 if (element == NULL || strcmp(element, "END") == 0) {
-                     file_ended = true;
-                     return false;
-                 }
-             }
-         }
+        line_c = (char*) line.c_str();
+        char* element = strtok(line_c, ",");
+        if (element == NULL || strcmp(element, "END") == 0) {
+          file_ended = true;
+          return false;
+        }
+      }
+    }
 
-         if (getline(*file_RGBD, line)) {
-             file_ended = false;
-
-             line_c = reinterpret_cast<char*> line.c_str();
-             char* element = strtok(line_c, ",");
-             if (element == NULL || strcmp(element, "END") == 0) {
-                 file_ended = true;
-                 return false;
-             }
-             currentFrameNum_RGBD = atoi(element);
-             if (currentFrameNum != currentFrameNum_RGBD) {
-                 printf("skeleton: %d rgbd: %d\n", currentFrameNum, currentFrameNum_RGBD);
-                 errorMsg("FRAME NUMBER BETWEEN SKELETON AND RGBD DOES NOT MATCH!!!!!!!!! (READING RGBD)");
-             }
-             for (int y = 0; y < Y_RES; y++) {
-                 for (int x = 0; x < X_RES; x++) {
-                     for (int d = 0; d < RGBD_data; d++) {
-
-                         element = strtok(NULL, ","); // passing NULL keeps tokenizing previous call
-                         if (element == NULL) {
-                             file_ended = true;
-                             return false;
-                         }
-                         int e = atoi(element);
-
-                         if (!mirrored) {
-                             IMAGE[x][y][d] = e;
-                         } else {
-                             IMAGE[x][(Y_RES - 1) - y][d] = e;
-                         }
-                     }
-
-                 }
-             }
-             //printf( "x: %d y: %d" ,x,y);
-             // check if there is more data in current frame..
-             element = strtok(NULL, ",");
-             if (element != NULL) {
-                 printf("line_c = %s\n", line_c);
-                 errorMsg("more data exist in RGBD data ..\n");
-
-             }
-
-         }
-
-         return !file_ended;
+    if (getline(*file_RGBD, line)) {
+     file_ended = false;
+     line_c = (char*) line.c_str();
+     char* element = strtok(line_c, ",");
+     if (element == NULL || strcmp(element, "END") == 0) {
+       file_ended = true;
+       return false;
      }
+     currentFrameNum_RGBD = atoi(element);
+     if (currentFrameNum != currentFrameNum_RGBD) {
+       printf("skeleton: %d rgbd: %d\n", currentFrameNum, currentFrameNum_RGBD);
+       errorMsg("FRAME NUMBER BETWEEN SKELETON AND RGBD DOES NOT MATCH!!!!!!!!! (READING RGBD)");
+     }
+     for (int y = 0; y < Y_RES; y++) {
+       for (int x = 0; x < X_RES; x++) {
+         for (int d = 0; d < RGBD_data; d++) {
+           element = strtok(NULL, ",");
+           // passing NULL keeps tokenizing previous call
+           if (element == NULL) {
+             file_ended = true;
+             return false;
+           }
+           int e = atoi(element);
+           if (!mirrored) {
+             IMAGE[x][y][d] = e;
+           } else {
+             IMAGE[x][(Y_RES - 1) - y][d] = e;
+           }
+         }
+       }
+     }
+     // check if there is more data in current frame..
+     element = strtok(NULL, ",");
+     if (element != NULL) {
+       printf("line_c = %s\n", line_c);
+       errorMsg("more data exist in RGBD data ..\n");
+     }
+    }
+    return !file_ended;
+  }
 
 
   bool skipNextLine_RGBD_c() {
-      string line;
-      char* line_c;
-      bool file_ended = true;
-
-
-      if (getline(in_RGBD, line)) {
-          file_ended = false;
-
-          line_c = reinterpret_cast<char*> line.c_str();
-          char* element = strtok(line_c, ",");
-          if (element == NULL || strcmp(element, "END") == 0) {
-              file_ended = true;
-              return false;
-          }
-          currentFrameNum_RGBD = atoi(element);
+    string line;
+    char* line_c;
+    bool file_ended = true;
+    if (getline(in_RGBD, line)) {
+      file_ended = false;
+      line_c = (char*) line.c_str();
+      char* element = strtok(line_c, ",");
+      if (element == NULL || strcmp(element, "END") == 0) {
+        file_ended = true;
+        return false;
       }
-
-
-      return !file_ended;
+      currentFrameNum_RGBD = atoi(element);
+    }
+    return !file_ended;
   }
 
 
   bool skipNextLine_RGBD() {
-      string line;
-      char* line_c;
-      bool file_ended = true;
-
-
-      if (getline(*file_RGBD, line)) {
-          file_ended = false;
-
-          line_c = reinterpret_cast<char*> line.c_str();
-          char* element = strtok(line_c, ",");
-          if (element == NULL || strcmp(element, "END") == 0) {
-              file_ended = true;
-              return false;
-          }
-          currentFrameNum_RGBD = atoi(element);
+    string line;
+    char* line_c;
+    bool file_ended = true;
+    if (getline(*file_RGBD, line)) {
+      file_ended = false;
+      line_c = (char*) line.c_str();
+      char* element = strtok(line_c, ",");
+      if (element == NULL || strcmp(element, "END") == 0) {
+        file_ended = true;
+        return false;
       }
-
-
-      return !file_ended;
+      currentFrameNum_RGBD = atoi(element);
+    }
+    return !file_ended;
   }
 
  public:

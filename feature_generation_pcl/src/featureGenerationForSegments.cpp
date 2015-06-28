@@ -12,8 +12,7 @@
 #include <cmath>
 #include <dirent.h>
 #include "constants.h"
-#include <opencv/cv.h>
-#include <opencv/highgui.h>
+#include <opencv2/opencv.hpp>
 
 //#include "Point2D.h"
 //#include "HOGFeaturesOfBlock.h"
@@ -95,7 +94,7 @@ void readSegmentsFile() {
             string rest = element2.substr(pos + 1);
             pos = rest.find_first_of(',');
             while (pos!=string::npos){
-                
+
                 int fnum = atoi( rest.substr(0,pos).c_str() );
                 cout << fnum << ",";
                 SegmentList[element1][cluster].insert(fnum);
@@ -106,8 +105,8 @@ void readSegmentsFile() {
             cout << fnum << ",";
             SegmentList[element1][cluster].insert(fnum);
             cout << endl;
-            
-            
+
+
         }
 
 
@@ -272,7 +271,7 @@ int getCluster(int frameNum, string id) {
 }
 
 /*
- * 
+ *
  */
 int main(int argc, char** argv) {
 
@@ -358,17 +357,17 @@ int main(int argc, char** argv) {
             if (useSkeleton)
                 features_skeleton = new FeaturesSkel((char*) all_files[i].c_str(), pRecFile, mirrored);
 
-             
+
             FeaturesSkelRGBD* features_rgbd = new FeaturesSkelRGBD(pRecFile, mirrored);
              */
-            int oldSegNum = 1; 
+            int oldSegNum = 1;
             while (status > 0) {
 
                 //cout << "status = " << status << endl;
                 // if the frame belongs to a segment
                 int segNum =  getCluster(status, all_files[i]);
                 if (segNum != 0) {
-                    
+
                     Frame frame (IMAGE, data, pos_data, objData, all_files[i], status, transformfile, objPCInds);
                     //TEMPORARY CHANGE FOR BASELINE : Frame frame (IMAGE, data, pos_data, objData, all_files[i], status);
 
@@ -379,7 +378,7 @@ int main(int argc, char** argv) {
                         fmf.setCurrentSegment(segment, oldSegNum);
                         fmf.computeFreatures(true);
                         segment.clear();
-                        oldSegNum = segNum; 
+                        oldSegNum = segNum;
                     }
                     if (lastActId.compare(frame.sequenceId) != 0) {
                         cout << "activity changed, new id : " << frame.sequenceId << endl;
@@ -403,4 +402,3 @@ int main(int argc, char** argv) {
 
     return 0;
 }
-

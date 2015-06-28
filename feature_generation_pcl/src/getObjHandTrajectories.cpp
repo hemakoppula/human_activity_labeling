@@ -6,8 +6,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <dirent.h>
-#include <opencv/cv.h>
-#include <opencv/highgui.h>
+#include <opencv2/opencv.hpp>
 #include <pcl/point_types.h>
 #include <cstdlib>
 #include <cstdio>
@@ -92,7 +91,7 @@ void parseChk(bool chk) {
 
 void readSegmentsFile() {
   const string labelfile = "Segmentation.txt";
-  ifstream file(reinterpret_cast<char*> labelfile.c_str(), ifstream::in);
+  ifstream file((char*) labelfile.c_str(), ifstream::in);
   string line;
   int count = 0;
   while (getline(file, line)) {
@@ -130,7 +129,7 @@ void readSegmentsFile() {
 // read label file to get the frame list for each activity
 void readLabelFile() {
   const string labelfile = dataLocation + "labeledFrames.txt";
-  ifstream file((reinterpret_cast<char*>) labelfile.c_str(), ifstream::in);
+  ifstream file((char*) labelfile.c_str(), ifstream::in);
   string line;
   int count = 0;
   while (getline(file, line)) {
@@ -155,8 +154,8 @@ void readDataActMap(string actfile) {
   const string mapfile = dataLocation + actfile;
 
   printf("Opening map of data to activity: \"%s\"\n",
-          (reinterpret_cast<char*>) mapfile.c_str());
-  ifstream file((reinterpret_cast<char*>) mapfile.c_str(), ifstream::in);
+          (char*) mapfile.c_str());
+  ifstream file((char*) mapfile.c_str(), ifstream::in);
 
   string line;
   int count = 0;
@@ -201,8 +200,8 @@ void readDataActMapOld(string actfile) {
   const string mapfile = dataLocation + actfile;
 
   printf("Opening map of data to activity: \"%s\"\n",
-          (reinterpret_cast<char*>) mapfile.c_str());
-  ifstream file((reinterpret_cast<char*>) mapfile.c_str(), ifstream::in);
+          (char*) mapfile.c_str());
+  ifstream file((char*) mapfile.c_str(), ifstream::in);
 
   string line;
   int count = 0;

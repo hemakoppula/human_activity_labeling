@@ -12,7 +12,7 @@ Copyright (C) 2012 Hema Koppula
 #include <vector>
 #include <algorithm>
 
-#include "./frame_skel.h"
+#include "./frame_skel.cpp"
 #include "./segment-graph.h"
 
 using namespace std;

@@ -73,7 +73,7 @@ void extractEuclideanClusters(const pcl::PointCloud<PointOutT> &cloud,
 
     int cnt = 0;
 
-    while (sq_idx < static_cast<int> seed_queue.size()) {
+    while (sq_idx < seed_queue.size()) {
       cnt++;
       // Search for sq_idx
       adjTolerance = cloud.points[seed_queue[sq_idx]].distance * tolerance;
@@ -145,8 +145,7 @@ void extractEuclideanClusters(
     processed[i] = true;
 
     int cnt = 0;
-
-    while (sq_idx < static_cast<int>seed_queue.size()) {
+    while (sq_idx < seed_queue.size()) {
       cnt++;
       // Search for sq_idx
       adjTolerance = cloud.points[seed_queue[sq_idx]].distance * tolerance;

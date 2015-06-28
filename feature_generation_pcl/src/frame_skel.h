@@ -6,14 +6,12 @@ Copyright (C) 2012 Hema Koppula
 #define FEATURE_GENERATION_PCL_SRC_FRAME_SKEL_H_
 
 
-#include <pcl/point_types.h>
-
 #include <vector>
 #include <string>
 
 #include "includes/point_types.h"
 #include "includes/CombineUtils.h"
-
+#include "./constants.h"
 
 
 typedef pcl::PointXYZRGB PointT;

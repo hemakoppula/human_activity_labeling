@@ -14,7 +14,7 @@ Copyright (C) 2012 Hema Koppula
 #include <map>
 #include <vector>
 
-#include "./frame_skel.h"
+#include "./frame_skel.cpp"
 #include "includes/color.h"
 #include "includes/point_types.h"
 #include "includes/CombineUtils.h"

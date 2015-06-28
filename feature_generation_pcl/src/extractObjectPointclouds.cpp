@@ -20,12 +20,7 @@
 #include <cmath>
 #include <dirent.h>
 #include "constants.h"
-//#include <opencv/cv.h>
-//#include <opencv/highgui.h>
 
-//#include "Point2D.h"
-//#include "HOGFeaturesOfBlock.h"
-//#include "HOG.h"
 #include <pcl/point_types.h>
 typedef pcl::PointXYZRGB PointT;
 #include "includes/point_types.h"
@@ -33,12 +28,8 @@ typedef pcl::PointXYZRGB PointT;
 
 #include "readData.cpp"
 
-//#include "features.cpp"
-//#include "featuresRGBD_skel.cpp"
-//#include "features_singleFrame.cpp"
-//#include "frame.cpp"
+
 #include "includes/color.h"
-//#include "pointcloudClustering.h"
 #include "frame.cpp"
 
 using namespace std;

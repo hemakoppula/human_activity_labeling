@@ -117,8 +117,8 @@ class VectorG {
       return out;
   }
 
-  PointT getAsPoint() {
-    PointT p;
+  pcl::PointXYZRGB getAsPoint() {
+    pcl::PointXYZRGB p;
     p.x = v[0];
     p.y = v[1];
     p.z = v[2];
@@ -215,7 +215,7 @@ class TransformG {
     outFile.close();
   }
 
-  void transformPointCloudInPlaceAndSetOrigin(pcl::PointCloud<PointT> & in) {
+  void transformPointCloudInPlaceAndSetOrigin(pcl::PointCloud<pcl::PointXYZRGB> & in) {
     boost::numeric::ublas::matrix<double> matIn(4, 1);
 
     for (size_t i = 0; i < in.points.size(); ++i) {
@@ -236,7 +236,7 @@ class TransformG {
     in.sensor_origin_ = getOrigin().toEigenFormat();
   }
 
-  void transformPointInPlace(PointT & in) {
+  void transformPointInPlace(pcl::PointXYZRGB & in) {
     boost::numeric::ublas::matrix<double> matIn(4, 1);
 
     double * matrixPtr = matIn.data().begin();
@@ -453,7 +453,7 @@ class TransformG {
 
 TransformG readTranform(const string & filename) {
   boost::numeric::ublas::matrix<double> mat(4, 4);
-  ifstream file(reinterpret_cast<char*> filename.c_str(), ifstream::in);
+  ifstream file((char*)filename.c_str(), ifstream::in);
   string line;
   int row = 0;
   while (getline(file, line)) {
@@ -470,7 +470,7 @@ TransformG readTranform(const string & filename) {
   return transG;
 }
 
-void appendCamIndex(pcl::PointCloud<PointT>::Ptr in,
+void appendCamIndex(pcl::PointCloud<pcl::PointXYZRGB>::Ptr in,
                     pcl::PointCloud<pcl::PointXYGRGBCam>::Ptr out,
                     int camIndex) {
   out->header = in->header;

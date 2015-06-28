@@ -12,8 +12,7 @@
 #include <cmath>
 #include <dirent.h>
 #include "constants.h"
-#include <opencv/cv.h>
-#include <opencv/highgui.h>
+#include <opencv2/opencv.hpp>
 
 //#include "Point2D.h"
 //#include "HOGFeaturesOfBlock.h"
@@ -96,7 +95,7 @@ void readSegmentsFile() {
             string rest = element2.substr(pos + 1);
             pos = rest.find_first_of(',');
             while (pos!=string::npos){
-                
+
                 int fnum = atoi( rest.substr(0,pos).c_str() );
                 cout << fnum << ",";
                 SegmentList[element1][cluster].insert(fnum);
@@ -107,8 +106,8 @@ void readSegmentsFile() {
             cout << fnum << ",";
             SegmentList[element1][cluster].insert(fnum);
             cout << endl;
-            
-            
+
+
         }
 
 
@@ -274,7 +273,7 @@ int getCluster(int frameNum, string id) {
 }
 
 /*
- * 
+ *
  */
 int main(int argc, char** argv) {
 
@@ -365,8 +364,8 @@ int main(int argc, char** argv) {
             /*FeaturesSkel* features_skeleton;
             if (useSkeleton)
                 features_skeleton = new FeaturesSkel((char*) all_files[i].c_str(), pRecFile, mirrored);
-             
-             
+
+
             FeaturesSkelRGBD* features_rgbd = new FeaturesSkelRGBD(pRecFile, mirrored);
              */
             int oldSegNum = 1;
@@ -379,19 +378,19 @@ int main(int argc, char** argv) {
                 Frame frame(IMAGE, data, pos_data, objData, all_files[i], status, transformfile, objPCInds);
                 frames.push_back(frame);
                 if(frames.size()>2){frames.pop_front();}
-                
+
                 if (lastActId.compare(frame.sequenceId) != 0) {
                     cout << "activity changed, new id : " << frame.sequenceId << endl;
                     lastActId = frame.sequenceId;
                     ff.resetActivity();
                 }
-               
-                
+
+
                 ff.setCurrentFrames(frames,status);
                 ff.computeFreatures(true);
-               
-                
-               
+
+
+
 
 
                 status = DATA->readNextFrame(data, pos_data, data_CONF, pos_data_CONF, IMAGE, objData, objPCInds);
@@ -406,4 +405,3 @@ int main(int argc, char** argv) {
 
     return 0;
 }
-

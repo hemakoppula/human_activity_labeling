@@ -4,7 +4,6 @@ Copyright (C) 2012 Hema Koppula
 
 #include <pcl/visualization/pcl_visualizer.h>
 
-#include <limits>
 #include <string>
 #include <vector>
 
@@ -12,7 +11,7 @@ Copyright (C) 2012 Hema Koppula
 #include "includes/color.h"
 #include "includes/point_types.h"
 #include "includes/CombineUtils.h"
-#include "./frame_skel.h"
+#include "frame_skel.cpp"
 #include "readData.cpp"
 
 typedef pcl::PointXYZRGB PointT;
